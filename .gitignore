@@ -1,0 +1,4 @@
+ticket-service/target/
+booking-service/target/
+tools/*.jar
+.DS_Store
