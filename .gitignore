@@ -1,4 +1,8 @@
 ticket-service/target/
 booking-service/target/
+booking-service/build/
+booking-service/.gradle/
+.idea/
+wildfly/
 tools/*.jar
 .DS_Store

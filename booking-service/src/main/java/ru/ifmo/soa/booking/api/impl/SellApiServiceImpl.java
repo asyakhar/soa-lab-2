@@ -1,26 +1,70 @@
 package ru.ifmo.soa.booking.api.impl;
 
-import ru.ifmo.soa.booking.api.*;
-import ru.ifmo.soa.booking.model.*;
-
-import ru.ifmo.soa.booking.model.ErrorResponse;
-
-import java.util.List;
-import java.util.Map;
-import ru.ifmo.soa.booking.api.NotFoundException;
-
-import java.io.InputStream;
-
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import ru.ifmo.soa.booking.api.NotFoundException;
+import ru.ifmo.soa.booking.api.SellApiService;
+import ru.ifmo.soa.booking.service.BookingStore;
+import ru.ifmo.soa.booking.service.ErrorResponses;
+import ru.ifmo.soa.booking.service.TicketServiceClient;
 
 @RequestScoped
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaResteasyServerCodegen", date = "2026-09-29T15:09:58.593749+03:00[Europe/Moscow]")
 public class SellApiServiceImpl implements SellApiService {
-      public Response sellTicket(Long ticketId,Long personId,Double price,SecurityContext securityContext)
-      throws NotFoundException {
-      // do some magic!
-      return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
-  }
+
+    @Inject
+    TicketServiceClient ticketServiceClient;
+
+    @Inject
+    BookingStore bookingStore;
+
+    @Override
+    public Response sellTicket(
+            Long ticketId,
+            Long personId,
+            Double price,
+            SecurityContext securityContext
+    ) throws NotFoundException {
+        String path = "/booking/sell/" + ticketId
+                + "/" + personId + "/" + price;
+
+        if (ticketId == null || personId == null || price == null
+                || ticketId <= 0 || personId <= 0 || price <= 0) {
+            String message =
+                    "ticket-id, person-id и price должны быть больше 0.";
+            return error(422, "Unprocessable Content", message, path);
+        }
+
+        if (!ticketServiceClient.exists(ticketId)) {
+            String message = "Билет с id " + ticketId + " не найден.";
+            return error(404, "Not Found", message, path);
+        }
+
+        if (!bookingStore.sell(ticketId, personId, price)) {
+            String message =
+                    "Билет с id " + ticketId + " уже продан.";
+            return error(409, "Conflict", message, path);
+        }
+
+        return Response.noContent().build();
+    }
+
+    private Response error(
+            int status,
+            String error,
+            String message,
+            String path
+    ) {
+        return Response.status(status)
+                .type(MediaType.APPLICATION_JSON)
+                .entity(ErrorResponses.create(
+                        status,
+                        error,
+                        message,
+                        path
+                ))
+                .build();
+    }
 }

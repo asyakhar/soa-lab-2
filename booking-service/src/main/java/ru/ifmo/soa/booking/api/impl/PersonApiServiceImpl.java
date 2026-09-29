@@ -1,26 +1,43 @@
 package ru.ifmo.soa.booking.api.impl;
 
-import ru.ifmo.soa.booking.api.*;
-import ru.ifmo.soa.booking.model.*;
-
-import ru.ifmo.soa.booking.model.ErrorResponse;
-
-import java.util.List;
-import java.util.Map;
-import ru.ifmo.soa.booking.api.NotFoundException;
-
-import java.io.InputStream;
-
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import ru.ifmo.soa.booking.api.NotFoundException;
+import ru.ifmo.soa.booking.api.PersonApiService;
+import ru.ifmo.soa.booking.service.BookingStore;
+import ru.ifmo.soa.booking.service.ErrorResponses;
 
 @RequestScoped
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaResteasyServerCodegen", date = "2026-09-29T15:09:58.593749+03:00[Europe/Moscow]")
 public class PersonApiServiceImpl implements PersonApiService {
-      public Response cancelPersonBookings(Long personId,SecurityContext securityContext)
-      throws NotFoundException {
-      // do some magic!
-      return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "magic!")).build();
-  }
+
+    @Inject
+    BookingStore bookingStore;
+
+    @Override
+    public Response cancelPersonBookings(
+            Long personId,
+            SecurityContext securityContext
+    ) throws NotFoundException {
+        String path = "/booking/person/" + personId + "/cancel";
+
+        if (personId == null || personId <= 0) {
+            String message = "person-id должен быть больше 0.";
+            return Response.status(422)
+                    .type(MediaType.APPLICATION_JSON)
+                    .entity(ErrorResponses.create(
+                            422,
+                            "Unprocessable Content",
+                            message,
+                            path,
+                            "person-id"
+                    ))
+                    .build();
+        }
+
+        bookingStore.cancelByPerson(personId);
+        return Response.noContent().build();
+    }
 }
