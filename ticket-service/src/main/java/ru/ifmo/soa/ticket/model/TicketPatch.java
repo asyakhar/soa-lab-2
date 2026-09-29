@@ -1,5 +1,5 @@
 package ru.ifmo.soa.ticket.model;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -51,17 +51,16 @@ public class TicketPatch   {
   private String comment = null;
 
   @JsonProperty("type")
-
   @JsonInclude(JsonInclude.Include.NON_ABSENT)  // Exclude from JSON if absent
   @JsonSetter(nulls = Nulls.FAIL)    // FAIL setting if the value is null
   private TicketType type = null;
 
   @JsonProperty("event")
-
   @JsonInclude(JsonInclude.Include.NON_ABSENT)  // Exclude from JSON if absent
-  @JsonSetter(nulls = Nulls.FAIL)    // FAIL setting if the value is null
   private EventInput event = null;
 
+  @JsonIgnore
+  private boolean eventProvided = false;
 
   public TicketPatch name(String name) { 
 
@@ -181,9 +180,9 @@ public class TicketPatch   {
     this.type = type;
   }
 
-  public TicketPatch event(EventInput event) { 
-
+  public TicketPatch event(EventInput event) {
     this.event = event;
+    this.eventProvided = true;
     return this;
   }
 
@@ -201,8 +200,15 @@ public class TicketPatch   {
 
 
 
-  public void setEvent(EventInput event) { 
+  @JsonSetter("event")
+  public void setEvent(EventInput event) {
     this.event = event;
+    this.eventProvided = true;
+  }
+
+  @JsonIgnore
+  public boolean isEventProvided() {
+    return eventProvided;
   }
 
   @Override

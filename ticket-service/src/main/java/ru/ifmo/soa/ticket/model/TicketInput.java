@@ -27,29 +27,22 @@ import jakarta.validation.constraints.*;
 
 public class TicketInput   {
   @JsonProperty("name")
-
   private String name = null;
 
   @JsonProperty("coordinates")
-
   private Coordinates coordinates = null;
 
   @JsonProperty("price")
-
   private Double price = null;
 
   @JsonProperty("comment")
-
   private String comment = null;
 
   @JsonProperty("type")
-
   private TicketType type = null;
 
   @JsonProperty("event")
-
   @JsonInclude(JsonInclude.Include.NON_ABSENT)  // Exclude from JSON if absent
-  @JsonSetter(nulls = Nulls.FAIL)    // FAIL setting if the value is null
   private EventInput event = null;
 
 
