@@ -37,7 +37,7 @@ public class TicketQueryService {
 
             checkField(field, "filter");
             checkOperator(operator);
-
+            validateFilter(field, operator, value);
             tickets.removeIf(ticket ->
                     !matches(ticket, field, operator, value)
             );
@@ -95,6 +95,33 @@ public class TicketQueryService {
         }
 
         tickets.sort(resultComparator);
+    }
+
+    private void validateFilter(
+            String field,
+            String operator,
+            String value
+    ) {
+        if (operator.equals("isnull")) {
+            if (!value.equals("true") && !value.equals("false")) {
+                throw invalidFilter(field + ":" + operator + ":" + value);
+            }
+            return;
+        }
+
+        if (operator.equals("contains")) {
+            if (!field.equals("name")
+                    && !field.equals("comment")
+                    && !field.equals("event.name")) {
+                throw new InvalidQueryException(
+                        "filter",
+                        "Оператор contains поддерживается только для строк."
+                );
+            }
+            return;
+        }
+
+        parseValue(field, value);
     }
 
     private boolean matches(

@@ -6,3 +6,5 @@ booking-service/.gradle/
 wildfly/
 tools/*.jar
 .DS_Store
+client/.venv/
+client/__pycache__/

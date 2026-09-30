@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import com.fasterxml.jackson.core.JsonParseException;
 
 @RestControllerAdvice
 public class ApiExceptionHandler {
@@ -105,17 +106,26 @@ public class ApiExceptionHandler {
         String field = exception.getName();
         Object value = exception.getValue();
 
-        boolean isUnprocessable =
-                UNPROCESSABLE_PARAMETERS.contains(field)
-                        || field.equals("id")
-                        && request.getMethod().equals("GET");
+        boolean isUnprocessable;
+
+        if (field.equals("ticket")) {
+            isUnprocessable =
+                    !hasCause(exception, JsonParseException.class);
+        } else {
+            isUnprocessable =
+                    UNPROCESSABLE_PARAMETERS.contains(field)
+                            || field.equals("id")
+                            && request.getMethod().equals("GET");
+        }
 
         int status = isUnprocessable ? 422 : 400;
 
         String message;
 
         if (field.equals("ticket")) {
-            message = "Параметр ticket содержит неразбираемый JSON.";
+            message = status == 400
+                    ? "Параметр ticket содержит неразбираемый JSON."
+                    : "Параметр ticket не соответствует схеме.";
         } else {
             message = "Параметр " + field
                     + " содержит некорректное значение: "
@@ -220,6 +230,21 @@ public class ApiExceptionHandler {
         );
     }
 
+    private boolean hasCause(
+            Throwable exception,
+            Class<? extends Throwable> expectedType
+    ) {
+        Throwable current = exception;
+
+        while (current != null) {
+            if (expectedType.isInstance(current)) {
+                return true;
+            }
+            current = current.getCause();
+        }
+
+        return false;
+    }
     private ErrorResponseViolations convertViolation(
             ConstraintViolation<?> source
     ) {

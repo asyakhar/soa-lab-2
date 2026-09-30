@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOA — управление билетами</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="site-header">
+    <div class="brand">
+        <div>
+            <p class="eyebrow">Билетная касса • Лабораторная №2</p>
+            <h1>Цирк «SOA»</h1>
+            <p class="subtitle">Манеж билетов и бронирований</p>
+        </div>
+    </div>
+    <button id="reloadButton" class="primary">Обновить афишу</button>
+</header>
+
+<button class="balloon-trigger balloon-trigger-left" type="button"
+        aria-label="Нажать на воздушные шары слева">
+    <img src="{{ url_for('static', filename='assets/circus-balloons.png') }}"
+         alt="Цирковые воздушные шары" draggable="false">
+</button>
+
+<button class="balloon-trigger balloon-trigger-right" type="button"
+        aria-label="Нажать на воздушные шары справа">
+    <img src="{{ url_for('static', filename='assets/circus-balloons.png') }}"
+         alt="Цирковые воздушные шары" draggable="false">
+</button>
+
+<main>
+    <div id="message" class="message hidden"></div>
+
+    <section class="panel">
+        <h2>Афиша билетов</h2>
+        <div class="filters">
+            <label>Страница
+                <input id="page" type="number" min="0" value="0">
+            </label>
+            <label>Размер
+                <input id="size" type="number" min="1" max="100" value="10">
+            </label>
+            <label class="wide">Сортировка
+                <input id="sort" placeholder="price,desc (каждое условие с новой строки)">
+            </label>
+            <label class="wide">Фильтры
+                <textarea id="filter" rows="2" placeholder="price:gte:100&#10;type:eq:VIP"></textarea>
+            </label>
+            <button id="applyFiltersButton" class="primary">Найти билеты</button>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Координаты</th>
+                    <th>Дата создания</th>
+                    <th>Цена</th>
+                    <th>Комментарий</th>
+                    <th>Тип</th>
+                    <th>Мероприятие</th>
+                </tr>
+                </thead>
+                <tbody id="ticketTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="pagination">
+            <button id="previousPageButton">Назад</button>
+            <span id="pageLabel">Страница 0</span>
+            <button id="nextPageButton">Вперёд</button>
+        </div>
+    </section>
+
+    <div class="grid">
+        <section class="panel">
+            <h2>Новый билет</h2>
+            <form id="createForm">
+                <label>JSON билета
+                    <textarea id="createTicket" rows="11">{
+  "name": "Билет в партер",
+  "coordinates": {"x": 10.5, "y": 20},
+  "price": 2500.5,
+  "comment": "Место рядом со сценой",
+  "type": "VIP",
+  "event": null
+}</textarea>
+                </label>
+                <button class="primary">Выпустить билет</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Поиск и удаление</h2>
+            <form id="getForm" class="compact-form">
+                <label>ID билета <input id="getId" type="number" min="1" required></label>
+                <label>ETag (необязательно) <input id="getEtag" placeholder='"ticket-1-v1"'></label>
+                <button>Получить</button>
+            </form>
+            <form id="deleteForm" class="compact-form danger-zone">
+                <label>ID билета <input id="deleteId" type="number" min="1" required></label>
+                <button class="danger">Удалить</button>
+            </form>
+            <button id="optionsButton">Показать разрешённые методы</button>
+        </section>
+
+        <section class="panel">
+            <h2>Полное обновление (PUT)</h2>
+            <form id="putForm">
+                <label>ID билета <input id="putId" type="number" min="1" required></label>
+                <label>JSON билета
+                    <textarea id="putTicket" rows="9">{
+  "name": "Обновлённый билет",
+  "coordinates": {"x": 15, "y": 25},
+  "price": 3000,
+  "comment": "Обновлено",
+  "type": "USUAL",
+  "event": null
+}</textarea>
+                </label>
+                <button class="primary">Обновить</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Частичное обновление (PATCH)</h2>
+            <form id="patchForm">
+                <label>ID билета <input id="patchId" type="number" min="1" required></label>
+                <label>JSON изменяемых полей
+                    <textarea id="patchTicket" rows="9">{
+  "price": 2800,
+  "comment": "Новый комментарий"
+}</textarea>
+                </label>
+                <button class="primary">Изменить</button>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2>Специальные номера</h2>
+            <button id="maxTypeButton">Билет с максимальным типом</button>
+            <form id="commentForm" class="compact-form">
+                <label>Подстрока комментария
+                    <input id="commentSubstring" required>
+                </label>
+                <button>Найти</button>
+            </form>
+            <form id="typeForm" class="compact-form">
+                <label>Тип
+                    <select id="greaterType">
+                        <option>VIP</option>
+                        <option>USUAL</option>
+                        <option>BUDGETARY</option>
+                        <option>CHEAP</option>
+                    </select>
+                </label>
+                <button>Найти типы больше</button>
+            </form>
+        </section>
+
+        <section class="panel booking-panel">
+            <h2>Касса и бронирования</h2>
+            <form id="sellForm" class="compact-form">
+                <label>ID билета <input id="sellTicketId" type="number" min="1" required></label>
+                <label>ID человека <input id="sellPersonId" type="number" min="1" required></label>
+                <label>Цена продажи <input id="sellPrice" type="number" min="0" step="any" required></label>
+                <button class="primary">Продать</button>
+            </form>
+            <form id="cancelForm" class="compact-form danger-zone">
+                <label>ID человека <input id="cancelPersonId" type="number" min="1" required></label>
+                <button class="danger">Отменить все бронирования</button>
+            </form>
+        </section>
+    </div>
+</main>
+
+<div id="clownScare" class="clown-scare" role="presentation" aria-hidden="true">
+    <img class="scare-clown scare-clown-left"
+         src="{{ url_for('static', filename='assets/scary-clown.png') }}"
+         alt="Страшный цирковой клоун">
+    <img class="scare-clown scare-clown-right"
+         src="{{ url_for('static', filename='assets/scary-clown.png') }}"
+         alt="Страшный цирковой клоун">
+</div>
+
+<div id="tigerShow" class="tiger-show" aria-hidden="true">
+    <img src="{{ url_for('static', filename='assets/tiger-fire-ring.png') }}"
+         alt="Тигр прыгает через огненное кольцо">
+</div>
+
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

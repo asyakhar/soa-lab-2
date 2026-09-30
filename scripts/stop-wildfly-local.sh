@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LAB2_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-WILDFLY_HOME="$LAB2_DIR/wildfly/wildfly-ee-10-41.0.1.Final"
+WILDFLY_HOME="${WILDFLY_HOME:-$LAB2_DIR/wildfly/wildfly-ee-10-41.0.1.Final}"
 
 stop_server() {
     local name="$1"

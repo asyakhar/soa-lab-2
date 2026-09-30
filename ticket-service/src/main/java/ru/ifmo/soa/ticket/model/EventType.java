@@ -38,10 +38,12 @@ public enum EventType {
   @JsonCreator
   public static EventType fromValue(String text) {
     for (EventType b : EventType.values()) {
-      if (String.valueOf(b.value).equals(text)) {
+      if (b.value != null && b.value.equals(text)) {
         return b;
       }
     }
-    return null;
+    throw new IllegalArgumentException(
+            "Неизвестный тип мероприятия: " + text
+    );
   }
 }

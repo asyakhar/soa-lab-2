@@ -17,7 +17,9 @@ public class TicketPatchConverter
     public TicketPatchConverter(ObjectMapper objectMapper) {
         this.reader = objectMapper
                 .readerFor(TicketPatch.class)
-                .with(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+                .without(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
+                .with(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .with(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
     }
 
     @Override

@@ -42,6 +42,8 @@ public enum TicketType {
         return b;
       }
     }
-    return null;
+    throw new IllegalArgumentException(
+            "Неизвестный тип билета: " + text
+    );
   }
 }

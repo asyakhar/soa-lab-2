@@ -31,7 +31,8 @@ public class SellApiServiceImpl implements SellApiService {
                 + "/" + personId + "/" + price;
 
         if (ticketId == null || personId == null || price == null
-                || ticketId <= 0 || personId <= 0 || price <= 0) {
+                || ticketId <= 0 || personId <= 0
+                || !Double.isFinite(price) || price <= 0) {
             String message =
                     "ticket-id, person-id и price должны быть больше 0.";
             return error(422, "Unprocessable Content", message, path);

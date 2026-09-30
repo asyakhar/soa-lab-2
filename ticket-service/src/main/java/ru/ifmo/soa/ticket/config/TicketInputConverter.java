@@ -17,7 +17,9 @@ public class TicketInputConverter
     public TicketInputConverter(ObjectMapper objectMapper) {
         this.reader = objectMapper
                 .readerFor(TicketInput.class)
-                .with(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+                .without(DeserializationFeature.ACCEPT_FLOAT_AS_INT)
+                .with(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .with(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
     }
 
     @Override
