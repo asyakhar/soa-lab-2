@@ -6,9 +6,12 @@ const messageBox = document.getElementById("message");
 const clownScare = document.getElementById("clownScare");
 const balloonTriggers = document.querySelectorAll(".balloon-trigger");
 const tigerShow = document.getElementById("tigerShow");
+const ticketModal = document.getElementById("ticketModal");
 let clownTimer = null;
 let tigerTimer = null;
+let confettiTimer = null;
 let lastBalloonTrigger = null;
+let currentTicketReceipt = null;
 
 function hideClowns() {
     clownScare.classList.remove("active");
@@ -41,10 +44,40 @@ function showTiger() {
     tigerShow.classList.add("active");
     tigerShow.setAttribute("aria-hidden", "false");
 
-    tigerTimer = setTimeout(() => {
-        tigerShow.classList.remove("active");
-        tigerShow.setAttribute("aria-hidden", "true");
-    }, 2400);
+    const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? 300
+        : 2400;
+
+    return new Promise(resolve => {
+        tigerTimer = setTimeout(() => {
+            tigerShow.classList.remove("active");
+            tigerShow.setAttribute("aria-hidden", "true");
+            resolve();
+        }, duration);
+    });
+}
+
+function showSaleConfetti() {
+    const layer = document.getElementById("saleConfetti");
+    const colors = ["#f5cf68", "#d94455", "#fff3d3", "#4d9b93", "#8d5ca6"];
+    layer.replaceChildren();
+    layer.classList.add("active");
+    clearTimeout(confettiTimer);
+
+    for (let index = 0; index < 64; index += 1) {
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.style.setProperty("--x", `${Math.random() * 100}vw`);
+        piece.style.setProperty("--delay", `${Math.random() * 450}ms`);
+        piece.style.setProperty("--duration", `${1300 + Math.random() * 1000}ms`);
+        piece.style.setProperty("--color", colors[index % colors.length]);
+        layer.appendChild(piece);
+    }
+
+    confettiTimer = window.setTimeout(() => {
+        layer.classList.remove("active");
+        layer.replaceChildren();
+    }, 2700);
 }
 
 balloonTriggers.forEach(trigger => {
@@ -77,10 +110,64 @@ function escapeHtml(value) {
 }
 
 function showMessage(text, type = "success") {
-    messageBox.className = `message ${type}`;
+    messageBox.className = `message mascot-speech ${type}`;
     messageBox.textContent = text;
     window.scrollTo({top: 0, behavior: "smooth"});
 }
+
+function openTicketReceipt(ticketId, personId, price, ticket) {
+    currentTicketReceipt = {ticketId, personId, price, ticket};
+    const eventName = ticket?.event?.name || ticket?.name || "Цирковое представление";
+    document.getElementById("ticketHeading").textContent = eventName;
+    document.getElementById("receiptTicketId").textContent = ticketId;
+    document.getElementById("receiptPerson").textContent = personId;
+    document.getElementById("receiptType").textContent = ticket?.type || "Обычный";
+    document.getElementById("receiptEvent").textContent = ticket?.event?.name || "Основное представление";
+    document.getElementById("receiptPrice").textContent = new Intl.NumberFormat("ru-RU", {
+        style: "currency", currency: "RUB", maximumFractionDigits: 2,
+    }).format(Number(price));
+    const coordinates = ticket?.coordinates;
+    document.getElementById("receiptCoordinates").textContent = coordinates
+        ? `(${coordinates.x}; ${coordinates.y})`
+        : "Место уточняется";
+    document.getElementById("receiptDate").textContent = new Date().toLocaleString("ru-RU");
+    ticketModal.classList.add("active");
+    ticketModal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("scare-open");
+    document.getElementById("printTicketButton").focus();
+}
+
+function closeTicketReceipt() {
+    ticketModal.classList.remove("active");
+    ticketModal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("scare-open");
+}
+
+ticketModal.querySelectorAll("[data-ticket-close]").forEach(button => {
+    button.addEventListener("click", closeTicketReceipt);
+});
+
+document.getElementById("printTicketButton").addEventListener("click", () => window.print());
+
+document.getElementById("replayTigerButton").addEventListener("click", async () => {
+    if (!currentTicketReceipt) return;
+    const receipt = currentTicketReceipt;
+    closeTicketReceipt();
+    showSaleConfetti();
+    await showTiger();
+    openTicketReceipt(
+        receipt.ticketId,
+        receipt.personId,
+        receipt.price,
+        receipt.ticket
+    );
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && ticketModal.classList.contains("active")) {
+        closeTicketReceipt();
+    }
+});
 
 function formatError(data, status) {
     if (!data || typeof data !== "object") {
@@ -164,7 +251,7 @@ async function loadTickets() {
         renderTickets(data);
         document.getElementById("pageLabel").textContent = `Страница ${page}`;
         if (messageBox.classList.contains("error")) {
-            messageBox.className = "message hidden";
+            messageBox.className = "message mascot-speech hidden";
         }
     } catch (error) {
         showMessage(error.message, "error");
@@ -324,7 +411,13 @@ document.getElementById("sellForm").addEventListener("submit", async event => {
     const price = document.getElementById("sellPrice").value;
     try {
         await callApi(`${bookingBase}/sell/${ticketId}/${personId}/${price}`, {method: "POST"});
-        showTiger();
+        const ticketPromise = callApi(`${ticketBase}/tickets/${ticketId}`)
+            .then(result => result.data)
+            .catch(() => null);
+        showSaleConfetti();
+        await showTiger();
+        const ticket = await ticketPromise;
+        openTicketReceipt(ticketId, personId, price, ticket);
         showMessage(`Билет ${ticketId} продан человеку ${personId}.`);
     } catch (error) {
         showMessage(error.message, "error");

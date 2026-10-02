@@ -6,6 +6,7 @@ from flask import Flask, Response, jsonify, render_template, request
 
 
 app = Flask(__name__)
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 TICKET_SERVICE_URL = os.getenv(
     "TICKET_SERVICE_URL",
