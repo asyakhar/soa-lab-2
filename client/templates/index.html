@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ЦИРКуль — билетная касса</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=bunny-2">
-    <link rel="stylesheet" href="{{ url_for('static', filename='modern.css') }}?v=bunny-2">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=bunny-4">
+    <link rel="stylesheet" href="{{ url_for('static', filename='modern.css') }}?v=bunny-4">
 </head>
 <body>
 <header class="site-header">
@@ -33,6 +33,12 @@
 
 <button class="balloon-trigger balloon-trigger-right" type="button"
         aria-label="Нажать на воздушные шары справа">
+    <img src="{{ url_for('static', filename='assets/circus-balloons.png') }}"
+         alt="Цирковые воздушные шары" draggable="false">
+</button>
+
+<button class="balloon-trigger balloon-trigger-top-right" type="button"
+        aria-label="Нажать на воздушные шары справа вверху">
     <img src="{{ url_for('static', filename='assets/circus-balloons.png') }}"
          alt="Цирковые воздушные шары" draggable="false">
 </button>
@@ -108,7 +114,12 @@
             </form>
             <form id="deleteForm" class="compact-form danger-zone">
                 <label>ID билета <input id="deleteId" type="number" min="1" required></label>
-                <button class="danger">Удалить</button>
+                <div class="clown-hand-delete">
+                    <button class="danger">Удалить</button>
+                    <img class="clown-grab-hand"
+                         src="{{ url_for('static', filename='assets/clown-grab-hand.png') }}"
+                         alt="" aria-hidden="true" draggable="false">
+                </div>
             </form>
             <button id="optionsButton">Показать разрешённые методы</button>
         </section>
@@ -183,6 +194,21 @@
     </div>
 </main>
 
+<footer class="circus-contacts">
+    <div class="contacts-intro">
+        <p class="contacts-kicker"><span class="contacts-brand">ЦИРКуль</span> ждёт гостей</p>
+        <h2>До встречи под куполом</h2>
+    </div>
+    <address class="contact-item">
+        <span class="contact-label">Адрес</span>
+        <strong>Кронверкский проспект, 49</strong>
+    </address>
+    <div class="contact-item">
+        <span class="contact-label">Хозяйки цирка</span>
+        <strong>Даша и Настя</strong>
+    </div>
+</footer>
+
 <div id="ticketModal" class="ticket-modal" aria-hidden="true">
     <div class="ticket-modal-backdrop" data-ticket-close></div>
     <section class="printed-ticket" role="dialog" aria-modal="true" aria-labelledby="ticketHeading">
@@ -227,6 +253,12 @@
 
 <div id="saleConfetti" class="confetti-layer" aria-hidden="true"></div>
 
-<script src="{{ url_for('static', filename='app.js') }}?v=bunny-2"></script>
+<div id="bookingCurtain" class="booking-curtain" aria-hidden="true">
+    <div class="curtain-panel curtain-panel-left"></div>
+    <div class="curtain-panel curtain-panel-right"></div>
+    <div class="curtain-message">Цирка не будет</div>
+</div>
+
+<script src="{{ url_for('static', filename='app.js') }}?v=bunny-4"></script>
 </body>
 </html>

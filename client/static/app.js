@@ -7,9 +7,11 @@ const clownScare = document.getElementById("clownScare");
 const balloonTriggers = document.querySelectorAll(".balloon-trigger");
 const tigerShow = document.getElementById("tigerShow");
 const ticketModal = document.getElementById("ticketModal");
+const bookingCurtain = document.getElementById("bookingCurtain");
 let clownTimer = null;
 let tigerTimer = null;
 let confettiTimer = null;
+let curtainTimer = null;
 let lastBalloonTrigger = null;
 let currentTicketReceipt = null;
 
@@ -55,6 +57,19 @@ function showTiger() {
             resolve();
         }, duration);
     });
+}
+
+function showBookingCurtain() {
+    clearTimeout(curtainTimer);
+    bookingCurtain.classList.remove("active");
+    void bookingCurtain.offsetWidth;
+    bookingCurtain.classList.add("active");
+    bookingCurtain.setAttribute("aria-hidden", "false");
+
+    curtainTimer = setTimeout(() => {
+        bookingCurtain.classList.remove("active");
+        bookingCurtain.setAttribute("aria-hidden", "true");
+    }, 2300);
 }
 
 function showSaleConfetti() {
@@ -429,6 +444,7 @@ document.getElementById("cancelForm").addEventListener("submit", async event => 
     const personId = document.getElementById("cancelPersonId").value;
     try {
         await callApi(`${bookingBase}/person/${personId}/cancel`, {method: "DELETE"});
+        showBookingCurtain();
         showMessage(`Все бронирования человека ${personId} отменены.`);
     } catch (error) {
         showMessage(error.message, "error");
