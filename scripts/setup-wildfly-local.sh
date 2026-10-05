@@ -11,10 +11,10 @@ sed_in_place() {
     local expression="$1"
     local file="$2"
 
-    if [[ "$(uname -s)" == "Darwin" ]]; then
-        sed -i '' "$expression" "$file"
-    else
+    if [[ "$(uname -s)" == "Linux" ]]; then
         sed -i "$expression" "$file"
+    else
+        sed -i '' "$expression" "$file"
     fi
 }
 
