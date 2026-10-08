@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -42,31 +43,32 @@ public class TicketsApiController implements TicketsApi {
     public TicketsApiController(TicketsApiDelegate delegate) {
         this.delegate = delegate;
     }
-    public ResponseEntity<Ticket> createTicket(@NotNull @Parameter(in = ParameterIn.QUERY, description = "JSON-объект с изменяемыми полями Ticket, закодированный в URL. id, creationDate и event.id не передаются (генерируются сервером). event может отсутствовать или быть null. Все остальные изменяемые поля обязательны. Swagger UI сериализует JSON и кодирует значение параметра автоматически. " ,required=true,schema=@Schema()) @Valid @RequestParam(value = "ticket", required = true) TicketInput ticket
-) {
+
+    public ResponseEntity<Ticket> createTicket(@NotNull @Parameter(in = ParameterIn.QUERY, description = "JSON-объект с изменяемыми полями Ticket, закодированный в URL. id, creationDate и event.id не передаются (генерируются сервером). event может отсутствовать или быть null. Все остальные изменяемые поля обязательны. Swagger UI сериализует JSON и кодирует значение параметра автоматически. ", required = true, schema = @Schema()) @Valid @RequestParam(value = "ticket", required = true) TicketInput ticket
+    ) {
         return delegate.createTicket(ticket);
     }
 
-    public ResponseEntity<Void> deleteTicket(@Min(1L)@Parameter(in = ParameterIn.PATH, description = "Уникальный идентификатор билета", required=true, schema=@Schema(allowableValues={ "1" }, minimum="1"
-)) @PathVariable("id") Long id
-) {
+    public ResponseEntity<Void> deleteTicket(@Min(1L) @Parameter(in = ParameterIn.PATH, description = "Уникальный идентификатор билета", required = true, schema = @Schema(allowableValues = {"1"}, minimum = "1"
+                                             )) @PathVariable("id") Long id
+    ) {
         return delegate.deleteTicket(id);
     }
 
-    public ResponseEntity<Ticket> getTicketById(@Min(1L)@Parameter(in = ParameterIn.PATH, description = "Уникальный идентификатор билета", required=true, schema=@Schema(allowableValues={ "1" }, minimum="1"
-)) @PathVariable("id") Long id
-,@Parameter(in = ParameterIn.HEADER, description = "ETag, полученный в предыдущем ответе" ,schema=@Schema()) @RequestHeader(value="If-None-Match", required=false) String ifNoneMatch
-) {
+    public ResponseEntity<Ticket> getTicketById(@Min(1L) @Parameter(in = ParameterIn.PATH, description = "Уникальный идентификатор билета", required = true, schema = @Schema(allowableValues = {"1"}, minimum = "1"
+                                                )) @PathVariable("id") Long id
+            , @Parameter(in = ParameterIn.HEADER, description = "ETag, полученный в предыдущем ответе", schema = @Schema()) @RequestHeader(value = "If-None-Match", required = false) String ifNoneMatch
+    ) {
         return delegate.getTicketById(id, ifNoneMatch);
     }
 
-    public ResponseEntity<List<Ticket>> getTickets(@Min(0)@Parameter(in = ParameterIn.QUERY, description = "Номер страницы с 0. Фильтрация и сортировка выполняются до пагинации. За пределами выборки возвращается пустой массив." ,schema=@Schema(allowableValues={ "0" }
-, defaultValue="0")) @Valid @RequestParam(value = "page", required = false, defaultValue="0") Integer page
-,@Min(1) @Max(100) @Parameter(in = ParameterIn.QUERY, description = "Максимальное количество элементов на странице." ,schema=@Schema(allowableValues={ "1", "100" }, minimum="1", maximum="100"
-, defaultValue="10")) @Valid @RequestParam(value = "size", required = false, defaultValue="10") Integer size
-,@Size(min=1) @Parameter(in = ParameterIn.QUERY, description = "Сортировка задаётся в формате `поле,направление`, где направление — `asc` или `desc`. Для сортировки по нескольким полям параметр передаётся несколько раз: `?sort=price,desc&sort=name,asc`. Вложенные поля записываются через точку, например `coordinates.x` или `event.name`. " ,schema=@Schema()) @Valid @RequestParam(value = "sort", required = false) List<String> sort
-,@Size(min=1) @Parameter(in = ParameterIn.QUERY, description = "Условие задаётся в формате `поле:оператор:значение`. Несколько параметров filter объединяются операцией AND. Поддерживаются операторы `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `contains` и `isnull`. Вложенные поля записываются через точку. Пример: `?filter=price:gte:100&filter=type:eq:VIP`. " ,schema=@Schema()) @Valid @RequestParam(value = "filter", required = false) List<String> filter
-) {
+    public ResponseEntity<List<Ticket>> getTickets(@Min(0) @Parameter(in = ParameterIn.QUERY, description = "Номер страницы с 0. Фильтрация и сортировка выполняются до пагинации. За пределами выборки возвращается пустой массив.", schema = @Schema(allowableValues = {"0"}
+                                                           , defaultValue = "0")) @Valid @RequestParam(value = "page", required = false, defaultValue = "0") Integer page
+            , @Min(1) @Max(100) @Parameter(in = ParameterIn.QUERY, description = "Максимальное количество элементов на странице.", schema = @Schema(allowableValues = {"1", "100"}, minimum = "1", maximum = "100"
+                    , defaultValue = "10")) @Valid @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
+            , @Size(min = 1) @Parameter(in = ParameterIn.QUERY, description = "Сортировка задаётся в формате `поле,направление`, где направление — `asc` или `desc`. Для сортировки по нескольким полям параметр передаётся несколько раз: `?sort=price,desc&sort=name,asc`. Вложенные поля записываются через точку, например `coordinates.x` или `event.name`. ", schema = @Schema()) @Valid @RequestParam(value = "sort", required = false) List<String> sort
+            , @Size(min = 1) @Parameter(in = ParameterIn.QUERY, description = "Условие задаётся в формате `поле:оператор:значение`. Несколько параметров filter объединяются операцией AND. Поддерживаются операторы `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `contains` и `isnull`. Вложенные поля записываются через точку. Пример: `?filter=price:gte:100&filter=type:eq:VIP`. ", schema = @Schema()) @Valid @RequestParam(value = "filter", required = false) List<String> filter
+    ) {
         return delegate.getTickets(page, size, sort, filter);
     }
 
@@ -74,17 +76,17 @@ public class TicketsApiController implements TicketsApi {
         return delegate.optionsTickets();
     }
 
-    public ResponseEntity<Ticket> patchTicket(@Min(1L)@Parameter(in = ParameterIn.PATH, description = "Уникальный идентификатор билета", required=true, schema=@Schema(allowableValues={ "1" }, minimum="1"
-)) @PathVariable("id") Long id
-,@NotNull @Parameter(in = ParameterIn.QUERY, description = "JSON-объект с полями Ticket, которые требуется изменить, закодированный в URL. Необходимо передать хотя бы одно поле. id, creationDate и event.id изменять нельзя. " ,required=true,schema=@Schema()) @Valid @RequestParam(value = "ticket", required = true) TicketPatch ticket
-) {
+    public ResponseEntity<Ticket> patchTicket(@Min(1L) @Parameter(in = ParameterIn.PATH, description = "Уникальный идентификатор билета", required = true, schema = @Schema(allowableValues = {"1"}, minimum = "1"
+                                              )) @PathVariable("id") Long id
+            , @NotNull @Parameter(in = ParameterIn.QUERY, description = "JSON-объект с полями Ticket, которые требуется изменить, закодированный в URL. Необходимо передать хотя бы одно поле. id, creationDate и event.id изменять нельзя. ", required = true, schema = @Schema()) @Valid @RequestParam(value = "ticket", required = true) TicketPatch ticket
+    ) {
         return delegate.patchTicket(id, ticket);
     }
 
-    public ResponseEntity<Ticket> updateTicket(@Min(1L)@Parameter(in = ParameterIn.PATH, description = "Уникальный идентификатор билета", required=true, schema=@Schema(allowableValues={ "1" }, minimum="1"
-)) @PathVariable("id") Long id
-,@NotNull @Parameter(in = ParameterIn.QUERY, description = "JSON-объект с изменяемыми полями Ticket, закодированный в URL. id, creationDate и event.id не передаются (генерируются сервером). event может отсутствовать или быть null. Все остальные изменяемые поля обязательны. Swagger UI сериализует JSON и кодирует значение параметра автоматически. " ,required=true,schema=@Schema()) @Valid @RequestParam(value = "ticket", required = true) TicketInput ticket
-) {
+    public ResponseEntity<Ticket> updateTicket(@Min(1L) @Parameter(in = ParameterIn.PATH, description = "Уникальный идентификатор билета", required = true, schema = @Schema(allowableValues = {"1"}, minimum = "1"
+                                               )) @PathVariable("id") Long id
+            , @NotNull @Parameter(in = ParameterIn.QUERY, description = "JSON-объект с изменяемыми полями Ticket, закодированный в URL. id, creationDate и event.id не передаются (генерируются сервером). event может отсутствовать или быть null. Все остальные изменяемые поля обязательны. Swagger UI сериализует JSON и кодирует значение параметра автоматически. ", required = true, schema = @Schema()) @Valid @RequestParam(value = "ticket", required = true) TicketInput ticket
+    ) {
         return delegate.updateTicket(id, ticket);
     }
 

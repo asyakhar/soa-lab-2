@@ -17,26 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
-/**
- * A delegate to be called by the {@link TicketQueriesApiController}}.
- * Implement this interface with a {@link org.springframework.stereotype.Service} annotated class.
- */
+
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2026-09-29T15:09:57.766484+03:00[Europe/Moscow]")
 public interface TicketQueriesApiDelegate {
 
-    /**
-     * @see TicketQueriesApi#getTicketWithMaxType
-     */
     ResponseEntity<Ticket> getTicketWithMaxType();
 
-    /**
-     * @see TicketQueriesApi#getTicketsByCommentSubstring
-     */
-    ResponseEntity<List<Ticket>> getTicketsByCommentSubstring( String  substring);
+    ResponseEntity<List<Ticket>> getTicketsByCommentSubstring(String substring);
 
-    /**
-     * @see TicketQueriesApi#getTicketsWithTypeGreaterThan
-     */
-    ResponseEntity<List<Ticket>> getTicketsWithTypeGreaterThan( TicketType  type);
-
+    ResponseEntity<List<Ticket>> getTicketsWithTypeGreaterThan(TicketType type);
 }

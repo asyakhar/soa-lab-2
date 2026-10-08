@@ -9,8 +9,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
 @Provider
-public class NumericParamConverterProvider
-        implements ParamConverterProvider {
+public class NumericParamConverterProvider implements ParamConverterProvider {
 
     @Override
     @SuppressWarnings("unchecked")

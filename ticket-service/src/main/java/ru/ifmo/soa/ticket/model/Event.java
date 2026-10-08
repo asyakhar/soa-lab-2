@@ -14,9 +14,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
-/**
- * Мероприятие, для которого предназначен билет
- */
+
 @Schema(description = "Мероприятие, для которого предназначен билет")
 @Validated
 @NotUndefined
@@ -38,109 +36,95 @@ public class Event   {
 
   @JsonProperty("eventType")
 
-  @JsonInclude(JsonInclude.Include.NON_ABSENT)  // Exclude from JSON if absent
-  @JsonSetter(nulls = Nulls.FAIL)    // FAIL setting if the value is null
+  @JsonInclude(JsonInclude.Include.NON_ABSENT)
+  @JsonSetter(nulls = Nulls.FAIL)
   private EventType eventType = null;
 
 
-  public Event id(Long id) { 
+  public Event id(Long id) {
 
     this.id = id;
     return this;
   }
 
-  /**
-   * Уникальный автоматически генерируемый идентификатор мероприятия, должен быть >0
-   * minimum: 1
-   * @return id
-   **/
-  
+
+
   @Schema(example = "7", required = true, accessMode = Schema.AccessMode.READ_ONLY, description = "Уникальный автоматически генерируемый идентификатор мероприятия, должен быть >0")
-  
+
   @NotNull
-@Min(1L)  public Long getId() {  
+@Min(1L)  public Long getId() {
     return id;
   }
 
 
 
-  public void setId(Long id) { 
+  public void setId(Long id) {
 
     this.id = id;
   }
 
-  public Event name(String name) { 
+  public Event name(String name) {
 
     this.name = name;
     return this;
   }
 
-  /**
-   * Название мероприятия. Строка не может быть пустой
-   * @return name
-   **/
-  
+
+
   @Schema(example = "Вечер оперы", required = true, description = "Название мероприятия. Строка не может быть пустой")
-  
+
   @NotNull
-@Size(min=1)   public String getName() {  
+@Size(min=1)   public String getName() {
     return name;
   }
 
 
 
-  public void setName(String name) { 
+  public void setName(String name) {
 
     this.name = name;
   }
 
-  public Event ticketsCount(Integer ticketsCount) { 
+  public Event ticketsCount(Integer ticketsCount) {
 
     this.ticketsCount = ticketsCount;
     return this;
   }
 
-  /**
-   * Количество билетов. Значение должно быть больше 0
-   * minimum: 1
-   * @return ticketsCount
-   **/
-  
+
+
   @Schema(example = "120", required = true, description = "Количество билетов. Значение должно быть больше 0")
-  
+
   @NotNull
-@Min(1)  public Integer getTicketsCount() {  
+@Min(1)  public Integer getTicketsCount() {
     return ticketsCount;
   }
 
 
 
-  public void setTicketsCount(Integer ticketsCount) { 
+  public void setTicketsCount(Integer ticketsCount) {
 
     this.ticketsCount = ticketsCount;
   }
 
-  public Event eventType(EventType eventType) { 
+  public Event eventType(EventType eventType) {
 
     this.eventType = eventType;
     return this;
   }
 
-  /**
-   * Get eventType
-   * @return eventType
-   **/
-  
+
+
   @Schema(description = "")
-  
+
 @Valid
-  public EventType getEventType() {  
+  public EventType getEventType() {
     return eventType;
   }
 
 
 
-  public void setEventType(EventType eventType) { 
+  public void setEventType(EventType eventType) {
     this.eventType = eventType;
   }
 
@@ -168,7 +152,7 @@ public class Event   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Event {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    ticketsCount: ").append(toIndentedString(ticketsCount)).append("\n");
@@ -177,10 +161,7 @@ public class Event   {
     return sb.toString();
   }
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
+
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";

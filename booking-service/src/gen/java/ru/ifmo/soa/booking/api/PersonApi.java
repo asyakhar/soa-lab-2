@@ -33,18 +33,18 @@ import jakarta.validation.constraints.*;
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaResteasyServerCodegen", date = "2026-09-29T15:09:58.593749+03:00[Europe/Moscow]")
 public class PersonApi  {
 
-    @Inject PersonApiService service;
+    @Inject
+    PersonApiService service;
 
     @DELETE
     @Path("/{person-id}/cancel")
-    
     @Produces({ "application/json" })
     @Operation(summary = "Отменить все бронирования человека", description = "Отменяет все бронирования указанного человека, удаляя его идентификатор из всех связанных билетов через API первого сервиса. ", tags={ "Booking" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Все бронирования человека успешно отменены"),
-        
+
         @ApiResponse(responseCode = "400", description = "Сервер не смог разобрать запрос: path-параметр person-id невозможно преобразовать в int64, например, передано буквенное или дробное значение либо число за пределами int64.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-        
+
         @ApiResponse(responseCode = "422", description = "Параметр person-id должен быть целым числом int64 больше 0.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))) })
     public Response cancelPersonBookings( @Min(1L) @PathParam("person-id") Long personId,@Context SecurityContext securityContext)
     throws NotFoundException {

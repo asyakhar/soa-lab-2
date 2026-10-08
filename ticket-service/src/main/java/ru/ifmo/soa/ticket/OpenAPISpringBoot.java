@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.Module;
 
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "ru.ifmo.soa.ticket", "ru.ifmo.soa.ticket.api" , "io.swagger.configuration"})
+@ComponentScan(basePackages = {"ru.ifmo.soa.ticket", "ru.ifmo.soa.ticket.api", "io.swagger.configuration"})
 public class OpenAPISpringBoot extends SpringBootServletInitializer implements CommandLineRunner {
 
     @Override
@@ -37,6 +37,7 @@ public class OpenAPISpringBoot extends SpringBootServletInitializer implements C
     public static void main(String[] args) throws Exception {
         new SpringApplication(OpenAPISpringBoot.class).run(args);
     }
+
     @Bean
     public Module jsonNullableModule() {
         return new JsonNullableModule();

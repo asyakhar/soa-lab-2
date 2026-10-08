@@ -17,12 +17,8 @@ public class PersonApiServiceImpl implements PersonApiService {
     BookingStore bookingStore;
 
     @Override
-    public Response cancelPersonBookings(
-            Long personId,
-            SecurityContext securityContext
-    ) throws NotFoundException {
+    public Response cancelPersonBookings(Long personId, SecurityContext securityContext) throws NotFoundException {
         String path = "/booking/person/" + personId + "/cancel";
-
         if (personId == null || personId <= 0) {
             String message = "person-id должен быть больше 0.";
             return Response.status(422)
@@ -36,7 +32,6 @@ public class PersonApiServiceImpl implements PersonApiService {
                     ))
                     .build();
         }
-
         bookingStore.cancelByPerson(personId);
         return Response.noContent().build();
     }

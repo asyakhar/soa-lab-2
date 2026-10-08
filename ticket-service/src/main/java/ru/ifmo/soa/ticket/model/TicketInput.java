@@ -1,6 +1,7 @@
 package ru.ifmo.soa.ticket.model;
 
 import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,233 +17,206 @@ import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
-/**
- * Билет
- */
+
 @Schema(description = "Билет")
 @Validated
 @NotUndefined
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2026-09-29T15:09:57.766484+03:00[Europe/Moscow]")
 
 
-public class TicketInput   {
-  @JsonProperty("name")
-  private String name = null;
+public class TicketInput {
+    @JsonProperty("name")
+    private String name = null;
 
-  @JsonProperty("coordinates")
-  private Coordinates coordinates = null;
+    @JsonProperty("coordinates")
+    private Coordinates coordinates = null;
 
-  @JsonProperty("price")
-  private Double price = null;
+    @JsonProperty("price")
+    private Double price = null;
 
-  @JsonProperty("comment")
-  private String comment = null;
+    @JsonProperty("comment")
+    private String comment = null;
 
-  @JsonProperty("type")
-  private TicketType type = null;
+    @JsonProperty("type")
+    private TicketType type = null;
 
-  @JsonProperty("event")
-  @JsonInclude(JsonInclude.Include.NON_ABSENT)  // Exclude from JSON if absent
-  private EventInput event = null;
-
-
-  public TicketInput name(String name) { 
-
-    this.name = name;
-    return this;
-  }
-
-  /**
-   * Название билета. Строка не может быть пустой
-   * @return name
-   **/
-  
-  @Schema(example = "Билет в партер", required = true, description = "Название билета. Строка не может быть пустой")
-  
-  @NotNull
-@Size(min=1)   public String getName() {  
-    return name;
-  }
+    @JsonProperty("event")
+    @JsonInclude(JsonInclude.Include.NON_ABSENT)
+    private EventInput event = null;
 
 
+    public TicketInput name(String name) {
 
-  public void setName(String name) { 
-
-    this.name = name;
-  }
-
-  public TicketInput coordinates(Coordinates coordinates) { 
-
-    this.coordinates = coordinates;
-    return this;
-  }
-
-  /**
-   * Get coordinates
-   * @return coordinates
-   **/
-  
-  @Schema(required = true, description = "")
-  
-@Valid
-  @NotNull
-  public Coordinates getCoordinates() {  
-    return coordinates;
-  }
-
-
-
-  public void setCoordinates(Coordinates coordinates) { 
-
-    this.coordinates = coordinates;
-  }
-
-  public TicketInput price(Double price) { 
-
-    this.price = price;
-    return this;
-  }
-
-  /**
-   * Цена билета. Значение должно быть больше 0
-   * minimum: 0
-   * @return price
-   **/
-  
-  @Schema(example = "2500.5", required = true, description = "Цена билета. Значение должно быть больше 0")
-  
-  @NotNull
-@DecimalMin(value = "0", inclusive = false)  public Double getPrice() {  
-    return price;
-  }
-
-
-
-  public void setPrice(Double price) { 
-
-    this.price = price;
-  }
-
-  public TicketInput comment(String comment) { 
-
-    this.comment = comment;
-    return this;
-  }
-
-  /**
-   * Комментарий к билету. Поле не может быть null
-   * @return comment
-   **/
-  
-  @Schema(example = "Место рядом со сценой", required = true, description = "Комментарий к билету. Поле не может быть null")
-  
-  @NotNull
-@Size(max=341)   public String getComment() {  
-    return comment;
-  }
-
-
-
-  public void setComment(String comment) { 
-
-    this.comment = comment;
-  }
-
-  public TicketInput type(TicketType type) { 
-
-    this.type = type;
-    return this;
-  }
-
-  /**
-   * Get type
-   * @return type
-   **/
-  
-  @Schema(required = true, description = "")
-  
-@Valid
-  @NotNull
-  public TicketType getType() {  
-    return type;
-  }
-
-
-
-  public void setType(TicketType type) { 
-
-    this.type = type;
-  }
-
-  public TicketInput event(EventInput event) { 
-
-    this.event = event;
-    return this;
-  }
-
-  /**
-   * Get event
-   * @return event
-   **/
-  
-  @Schema(description = "")
-  
-@Valid
-  public EventInput getEvent() {  
-    return event;
-  }
-
-
-
-  public void setEvent(EventInput event) { 
-    this.event = event;
-  }
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
+        this.name = name;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+
+
+    @Schema(example = "Билет в партер", required = true, description = "Название билета. Строка не может быть пустой")
+
+    @NotNull
+    @Size(min = 1)
+    public String getName() {
+        return name;
     }
-    TicketInput ticketInput = (TicketInput) o;
-    return Objects.equals(this.name, ticketInput.name) &&
-        Objects.equals(this.coordinates, ticketInput.coordinates) &&
-        Objects.equals(this.price, ticketInput.price) &&
-        Objects.equals(this.comment, ticketInput.comment) &&
-        Objects.equals(this.type, ticketInput.type) &&
-        Objects.equals(this.event, ticketInput.event);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(name, coordinates, price, comment, type, event);
-  }
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class TicketInput {\n");
-    
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    coordinates: ").append(toIndentedString(coordinates)).append("\n");
-    sb.append("    price: ").append(toIndentedString(price)).append("\n");
-    sb.append("    comment: ").append(toIndentedString(comment)).append("\n");
-    sb.append("    type: ").append(toIndentedString(type)).append("\n");
-    sb.append("    event: ").append(toIndentedString(event)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
+    public void setName(String name) {
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
+        this.name = name;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public TicketInput coordinates(Coordinates coordinates) {
+
+        this.coordinates = coordinates;
+        return this;
+    }
+
+
+
+    @Schema(required = true, description = "")
+
+    @Valid
+    @NotNull
+    public Coordinates getCoordinates() {
+        return coordinates;
+    }
+
+
+    public void setCoordinates(Coordinates coordinates) {
+
+        this.coordinates = coordinates;
+    }
+
+    public TicketInput price(Double price) {
+
+        this.price = price;
+        return this;
+    }
+
+
+
+    @Schema(example = "2500.5", required = true, description = "Цена билета. Значение должно быть больше 0")
+
+    @NotNull
+    @DecimalMin(value = "0", inclusive = false)
+    public Double getPrice() {
+        return price;
+    }
+
+
+    public void setPrice(Double price) {
+
+        this.price = price;
+    }
+
+    public TicketInput comment(String comment) {
+
+        this.comment = comment;
+        return this;
+    }
+
+
+
+    @Schema(example = "Место рядом со сценой", required = true, description = "Комментарий к билету. Поле не может быть null")
+
+    @NotNull
+    @Size(max = 341)
+    public String getComment() {
+        return comment;
+    }
+
+
+    public void setComment(String comment) {
+
+        this.comment = comment;
+    }
+
+    public TicketInput type(TicketType type) {
+
+        this.type = type;
+        return this;
+    }
+
+
+
+    @Schema(required = true, description = "")
+
+    @Valid
+    @NotNull
+    public TicketType getType() {
+        return type;
+    }
+
+
+    public void setType(TicketType type) {
+
+        this.type = type;
+    }
+
+    public TicketInput event(EventInput event) {
+
+        this.event = event;
+        return this;
+    }
+
+
+
+    @Schema(description = "")
+
+    @Valid
+    public EventInput getEvent() {
+        return event;
+    }
+
+
+    public void setEvent(EventInput event) {
+        this.event = event;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TicketInput ticketInput = (TicketInput) o;
+        return Objects.equals(this.name, ticketInput.name) &&
+                Objects.equals(this.coordinates, ticketInput.coordinates) &&
+                Objects.equals(this.price, ticketInput.price) &&
+                Objects.equals(this.comment, ticketInput.comment) &&
+                Objects.equals(this.type, ticketInput.type) &&
+                Objects.equals(this.event, ticketInput.event);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, coordinates, price, comment, type, event);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class TicketInput {\n");
+
+        sb.append("    name: ").append(toIndentedString(name)).append("\n");
+        sb.append("    coordinates: ").append(toIndentedString(coordinates)).append("\n");
+        sb.append("    price: ").append(toIndentedString(price)).append("\n");
+        sb.append("    comment: ").append(toIndentedString(comment)).append("\n");
+        sb.append("    type: ").append(toIndentedString(type)).append("\n");
+        sb.append("    event: ").append(toIndentedString(event)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 }

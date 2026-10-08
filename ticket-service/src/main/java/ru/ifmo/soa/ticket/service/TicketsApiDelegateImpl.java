@@ -1,4 +1,5 @@
 package ru.ifmo.soa.ticket.service;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ public class TicketsApiDelegateImpl implements TicketsApiDelegate {
 
     private final TicketStore store;
     private final TicketQueryService queryService;
+
     public TicketsApiDelegateImpl(
             TicketStore store,
             TicketQueryService queryService

@@ -10,8 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
-public class TicketQueriesApiDelegateImpl
-        implements TicketQueriesApiDelegate {
+public class TicketQueriesApiDelegateImpl implements TicketQueriesApiDelegate {
 
     private final TicketStore store;
 

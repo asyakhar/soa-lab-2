@@ -16,9 +16,7 @@ import com.fasterxml.jackson.annotation.Nulls;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
-/**
- * Информация об ошибке выполнения запроса
- */
+
 @Schema(description = "Информация об ошибке выполнения запроса")
 @Validated
 @NotUndefined
@@ -50,134 +48,117 @@ public class ErrorResponse   {
   @Valid
   private List<ErrorResponseViolations> violations = null;
 
-  public ErrorResponse timestamp(String timestamp) { 
+  public ErrorResponse timestamp(String timestamp) {
 
     this.timestamp = timestamp;
     return this;
   }
 
-  /**
-   * Время ошибки в UTC в формате dd.MM.yyyy HH:mm:ss, необязательные доли секунды.
-   * @return timestamp
-   **/
-  
+
+
   @Schema(example = "21.09.2026 14:30:00", required = true, description = "Время ошибки в UTC в формате dd.MM.yyyy HH:mm:ss, необязательные доли секунды.")
-  
+
   @NotNull
-@Pattern(regexp="^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.\\d{4} ([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.\\d{1,9})?$")   public String getTimestamp() {  
+@Pattern(regexp="^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.\\d{4} ([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.\\d{1,9})?$")   public String getTimestamp() {
     return timestamp;
   }
 
 
 
-  public void setTimestamp(String timestamp) { 
+  public void setTimestamp(String timestamp) {
 
     this.timestamp = timestamp;
   }
 
-  public ErrorResponse status(Integer status) { 
+  public ErrorResponse status(Integer status) {
 
     this.status = status;
     return this;
   }
 
-  /**
-   * HTTP-код ошибки
-   * minimum: 400
-   * maximum: 599
-   * @return status
-   **/
-  
+
+
   @Schema(example = "422", required = true, description = "HTTP-код ошибки")
-  
+
   @NotNull
-@Min(400) @Max(599)   public Integer getStatus() {  
+@Min(400) @Max(599)   public Integer getStatus() {
     return status;
   }
 
 
 
-  public void setStatus(Integer status) { 
+  public void setStatus(Integer status) {
 
     this.status = status;
   }
 
-  public ErrorResponse error(String error) { 
+  public ErrorResponse error(String error) {
 
     this.error = error;
     return this;
   }
 
-  /**
-   * Краткое название ошибки
-   * @return error
-   **/
-  
+
+
   @Schema(example = "Unprocessable Content", required = true, description = "Краткое название ошибки")
-  
+
   @NotNull
-  public String getError() {  
+  public String getError() {
     return error;
   }
 
 
 
-  public void setError(String error) { 
+  public void setError(String error) {
 
     this.error = error;
   }
 
-  public ErrorResponse message(String message) { 
+  public ErrorResponse message(String message) {
 
     this.message = message;
     return this;
   }
 
-  /**
-   * Подробное описание причины ошибки
-   * @return message
-   **/
-  
+
+
   @Schema(example = "price должен быть больше 0; получено -10.", required = true, description = "Подробное описание причины ошибки")
-  
+
   @NotNull
-  public String getMessage() {  
+  public String getMessage() {
     return message;
   }
 
 
 
-  public void setMessage(String message) { 
+  public void setMessage(String message) {
 
     this.message = message;
   }
 
-  public ErrorResponse path(String path) { 
+  public ErrorResponse path(String path) {
 
     this.path = path;
     return this;
   }
 
-  /**
-   * URL запроса, при обработке которого произошла ошибка
-   * @return path
-   **/
-  
+
+
   @Schema(example = "/api/v1/tickets", required = true, description = "URL запроса, при обработке которого произошла ошибка")
-  
+
   @NotNull
-  public String getPath() {  
+  public String getPath() {
     return path;
   }
 
 
 
-  public void setPath(String path) { 
+  public void setPath(String path) {
 
     this.path = path;
   }
 
-  public ErrorResponse violations(List<ErrorResponseViolations> violations) { 
+  public ErrorResponse violations(List<ErrorResponseViolations> violations) {
 
     this.violations = violations;
     return this;
@@ -191,20 +172,17 @@ public class ErrorResponse   {
     return this;
   }
 
-  /**
-   * Список нарушений схемы с именами полей. Для ошибок разбора может указываться весь параметр ticket.
-   * @return violations
-   **/
-  
+
+
   @Schema(description = "Список нарушений схемы с именами полей. Для ошибок разбора может указываться весь параметр ticket.")
   @Valid
-  public List<ErrorResponseViolations> getViolations() {  
+  public List<ErrorResponseViolations> getViolations() {
     return violations;
   }
 
 
 
-  public void setViolations(List<ErrorResponseViolations> violations) { 
+  public void setViolations(List<ErrorResponseViolations> violations) {
     this.violations = violations;
   }
 
@@ -234,7 +212,7 @@ public class ErrorResponse   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ErrorResponse {\n");
-    
+
     sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("    error: ").append(toIndentedString(error)).append("\n");
@@ -245,10 +223,7 @@ public class ErrorResponse   {
     return sb.toString();
   }
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
+
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";

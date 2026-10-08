@@ -52,12 +52,7 @@ public class SellApiServiceImpl implements SellApiService {
         return Response.noContent().build();
     }
 
-    private Response error(
-            int status,
-            String error,
-            String message,
-            String path
-    ) {
+    private Response error(int status, String error, String message, String path) {
         return Response.status(status)
                 .type(MediaType.APPLICATION_JSON)
                 .entity(ErrorResponses.create(

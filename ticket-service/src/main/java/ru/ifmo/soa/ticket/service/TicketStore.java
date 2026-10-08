@@ -1,4 +1,5 @@
 package ru.ifmo.soa.ticket.service;
+
 import ru.ifmo.soa.ticket.model.TicketPatch;
 import org.springframework.stereotype.Repository;
 import ru.ifmo.soa.ticket.model.Coordinates;
@@ -187,13 +188,13 @@ public class TicketStore {
 
         return Objects.equals(currentEvent.getName(), newEvent.getName())
                 && Objects.equals(
-                        currentEvent.getTicketsCount(),
-                        newEvent.getTicketsCount()
-                )
+                currentEvent.getTicketsCount(),
+                newEvent.getTicketsCount()
+        )
                 && Objects.equals(
-                        currentEvent.getEventType(),
-                        newEvent.getEventType()
-                );
+                currentEvent.getEventType(),
+                newEvent.getEventType()
+        );
     }
 
     private Event createEvent(EventInput input) {

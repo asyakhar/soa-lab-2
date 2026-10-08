@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import com.fasterxml.jackson.core.JsonParseException;
 
 @RestControllerAdvice
@@ -245,6 +246,7 @@ public class ApiExceptionHandler {
 
         return false;
     }
+
     private ErrorResponseViolations convertViolation(
             ConstraintViolation<?> source
     ) {

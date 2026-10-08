@@ -16,10 +16,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class ErrorResponse   {
   private String timestamp = null;  private Integer status = null;  private String error = null;  private String message = null;  private String path = null;  private List<ErrorResponseViolations> violations = new ArrayList<ErrorResponseViolations>();
 
-  /**
-   * Время ошибки в UTC в формате dd.MM.yyyy HH:mm:ss, необязательные доли секунды.
-   **/
-  
+
+
   @Schema(example = "21.09.2026 14:30:00", required = true, description = "Время ошибки в UTC в формате dd.MM.yyyy HH:mm:ss, необязательные доли секунды.")
   @JsonProperty("timestamp")
   @NotNull
@@ -30,12 +28,8 @@ public class ErrorResponse   {
     this.timestamp = timestamp;
   }
 
-  /**
-   * HTTP-код ошибки
-   * minimum: 400
-   * maximum: 599
-   **/
-  
+
+
   @Schema(example = "422", required = true, description = "HTTP-код ошибки")
   @JsonProperty("status")
   @NotNull
@@ -46,10 +40,8 @@ public class ErrorResponse   {
     this.status = status;
   }
 
-  /**
-   * Краткое название ошибки
-   **/
-  
+
+
   @Schema(example = "Unprocessable Content", required = true, description = "Краткое название ошибки")
   @JsonProperty("error")
   @NotNull
@@ -60,10 +52,8 @@ public class ErrorResponse   {
     this.error = error;
   }
 
-  /**
-   * Подробное описание причины ошибки
-   **/
-  
+
+
   @Schema(example = "price должен быть больше 0; получено -10.", required = true, description = "Подробное описание причины ошибки")
   @JsonProperty("message")
   @NotNull
@@ -74,10 +64,8 @@ public class ErrorResponse   {
     this.message = message;
   }
 
-  /**
-   * URL запроса, при обработке которого произошла ошибка
-   **/
-  
+
+
   @Schema(example = "/api/v1/tickets", required = true, description = "URL запроса, при обработке которого произошла ошибка")
   @JsonProperty("path")
   @NotNull
@@ -88,10 +76,8 @@ public class ErrorResponse   {
     this.path = path;
   }
 
-  /**
-   * Список нарушений схемы с именами полей. Для ошибок разбора может указываться весь параметр ticket.
-   **/
-  
+
+
   @Schema(description = "Список нарушений схемы с именами полей. Для ошибок разбора может указываться весь параметр ticket.")
   @JsonProperty("violations")
   @NotNull
@@ -129,7 +115,7 @@ public class ErrorResponse   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ErrorResponse {\n");
-    
+
     sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("    error: ").append(toIndentedString(error)).append("\n");
@@ -140,10 +126,7 @@ public class ErrorResponse   {
     return sb.toString();
   }
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
+
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";

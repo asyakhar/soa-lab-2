@@ -21,7 +21,6 @@ repositories {
 }
 
 dependencies {
-    // WildFly предоставляет Jakarta EE API во время выполнения.
     compileOnly 'jakarta.platform:jakarta.jakartaee-api:10.0.0'
 
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.25'

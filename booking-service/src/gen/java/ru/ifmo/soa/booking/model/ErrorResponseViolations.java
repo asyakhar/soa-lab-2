@@ -13,10 +13,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class ErrorResponseViolations   {
   private String field = null;  private String message = null;
 
-  /**
-   * Путь поля или имя параметра.
-   **/
-  
+
+
   @Schema(example = "ticket.price", required = true, description = "Путь поля или имя параметра.")
   @JsonProperty("field")
   @NotNull
@@ -27,10 +25,8 @@ public class ErrorResponseViolations   {
     this.field = field;
   }
 
-  /**
-   * Условие, которое нарушено, и переданное значение.
-   **/
-  
+
+
   @Schema(example = "price должен быть больше 0; получено -10.", required = true, description = "Условие, которое нарушено, и переданное значение.")
   @JsonProperty("message")
   @NotNull
@@ -64,17 +60,14 @@ public class ErrorResponseViolations   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class ErrorResponseViolations {\n");
-    
+
     sb.append("    field: ").append(toIndentedString(field)).append("\n");
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
     sb.append("}");
     return sb.toString();
   }
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
+
   private String toIndentedString(java.lang.Object o) {
     if (o == null) {
       return "null";

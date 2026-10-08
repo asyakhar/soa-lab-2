@@ -204,34 +204,29 @@ public class TicketQueryService {
             case "name" -> ticket.getName();
             case "coordinates.x" -> ticket.getCoordinates().getX();
             case "coordinates.y" -> ticket.getCoordinates().getY();
-            case "creationDate" ->
-                    LocalDateTime.parse(
-                            ticket.getCreationDate(),
-                            DATE_FORMAT
-                    );
+            case "creationDate" -> LocalDateTime.parse(
+                    ticket.getCreationDate(),
+                    DATE_FORMAT
+            );
             case "price" -> ticket.getPrice();
             case "comment" -> ticket.getComment();
             case "type" -> ticket.getType();
 
-            case "event.id" ->
-                    ticket.getEvent() == null
-                            ? null
-                            : ticket.getEvent().getId();
+            case "event.id" -> ticket.getEvent() == null
+                    ? null
+                    : ticket.getEvent().getId();
 
-            case "event.name" ->
-                    ticket.getEvent() == null
-                            ? null
-                            : ticket.getEvent().getName();
+            case "event.name" -> ticket.getEvent() == null
+                    ? null
+                    : ticket.getEvent().getName();
 
-            case "event.ticketsCount" ->
-                    ticket.getEvent() == null
-                            ? null
-                            : ticket.getEvent().getTicketsCount();
+            case "event.ticketsCount" -> ticket.getEvent() == null
+                    ? null
+                    : ticket.getEvent().getTicketsCount();
 
-            case "event.eventType" ->
-                    ticket.getEvent() == null
-                            ? null
-                            : ticket.getEvent().getEventType();
+            case "event.eventType" -> ticket.getEvent() == null
+                    ? null
+                    : ticket.getEvent().getEventType();
 
             default -> null;
         };
@@ -240,23 +235,17 @@ public class TicketQueryService {
     private Comparable<?> parseValue(String field, String value) {
         try {
             return switch (field) {
-                case "id", "coordinates.y", "event.id" ->
-                        Long.valueOf(value);
+                case "id", "coordinates.y", "event.id" -> Long.valueOf(value);
 
-                case "coordinates.x", "price" ->
-                        parseDouble(value);
+                case "coordinates.x", "price" -> parseDouble(value);
 
-                case "event.ticketsCount" ->
-                        Integer.valueOf(value);
+                case "event.ticketsCount" -> Integer.valueOf(value);
 
-                case "type" ->
-                        TicketType.valueOf(value);
+                case "type" -> TicketType.valueOf(value);
 
-                case "event.eventType" ->
-                        parseEventType(value);
+                case "event.eventType" -> parseEventType(value);
 
-                case "creationDate" ->
-                        LocalDateTime.parse(value, DATE_FORMAT);
+                case "creationDate" -> LocalDateTime.parse(value, DATE_FORMAT);
 
                 default -> value;
             };

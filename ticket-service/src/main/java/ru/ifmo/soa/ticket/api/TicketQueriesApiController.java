@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+
 import java.util.List;
 import java.util.Map;
 
@@ -41,17 +42,18 @@ public class TicketQueriesApiController implements TicketQueriesApi {
     public TicketQueriesApiController(TicketQueriesApiDelegate delegate) {
         this.delegate = delegate;
     }
+
     public ResponseEntity<Ticket> getTicketWithMaxType() {
         return delegate.getTicketWithMaxType();
     }
 
-    public ResponseEntity<List<Ticket>> getTicketsByCommentSubstring(@NotNull @Size(min=1) @Parameter(in = ParameterIn.QUERY, description = "Подстрока, которую должно содержать поле comment" ,required=true,schema=@Schema()) @Valid @RequestParam(value = "substring", required = true) String substring
-) {
+    public ResponseEntity<List<Ticket>> getTicketsByCommentSubstring(@NotNull @Size(min = 1) @Parameter(in = ParameterIn.QUERY, description = "Подстрока, которую должно содержать поле comment", required = true, schema = @Schema()) @Valid @RequestParam(value = "substring", required = true) String substring
+    ) {
         return delegate.getTicketsByCommentSubstring(substring);
     }
 
-    public ResponseEntity<List<Ticket>> getTicketsWithTypeGreaterThan(@NotNull @Parameter(in = ParameterIn.QUERY, description = "Тип билета, с которым выполняется сравнение" ,required=true,schema=@Schema()) @Valid @RequestParam(value = "type", required = true) TicketType type
-) {
+    public ResponseEntity<List<Ticket>> getTicketsWithTypeGreaterThan(@NotNull @Parameter(in = ParameterIn.QUERY, description = "Тип билета, с которым выполняется сравнение", required = true, schema = @Schema()) @Valid @RequestParam(value = "type", required = true) TicketType type
+    ) {
         return delegate.getTicketsWithTypeGreaterThan(type);
     }
 

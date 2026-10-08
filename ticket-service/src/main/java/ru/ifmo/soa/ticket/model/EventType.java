@@ -1,6 +1,7 @@
 package ru.ifmo.soa.ticket.model;
 
 import java.util.Objects;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.springframework.validation.annotation.Validated;
@@ -14,36 +15,34 @@ import jakarta.validation.constraints.*;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-/**
- * Тип мероприятия
- */
+
 public enum EventType {
-  CONCERT("CONCERT"),
+    CONCERT("CONCERT"),
     BASKETBALL("BASKETBALL"),
     OPERA("OPERA"),
     NULL(null);
 
-  private String value;
+    private String value;
 
-  EventType(String value) {
-    this.value = value;
-  }
-
-  @Override
-  @JsonValue
-  public String toString() {
-    return String.valueOf(value);
-  }
-
-  @JsonCreator
-  public static EventType fromValue(String text) {
-    for (EventType b : EventType.values()) {
-      if (b.value != null && b.value.equals(text)) {
-        return b;
-      }
+    EventType(String value) {
+        this.value = value;
     }
-    throw new IllegalArgumentException(
-            "Неизвестный тип мероприятия: " + text
-    );
-  }
+
+    @Override
+    @JsonValue
+    public String toString() {
+        return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static EventType fromValue(String text) {
+        for (EventType b : EventType.values()) {
+            if (b.value != null && b.value.equals(text)) {
+                return b;
+            }
+        }
+        throw new IllegalArgumentException(
+                "Неизвестный тип мероприятия: " + text
+        );
+    }
 }
