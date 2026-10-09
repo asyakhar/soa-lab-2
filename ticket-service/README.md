@@ -1,5 +1,20 @@
 # Swagger generated server
 
+## Build and verify OpenAPI
+
+Run the full build and generate OpenAPI from the running Spring MVC code:
+
+```bash
+mvn clean verify
+```
+
+Springdoc writes the generated document to
+`target/openapi/ticket-service.generated.json`. The verification compares the
+complete executable API contract with `../specs/ticket-service.openapi.json`:
+paths, operations, parameters, request schemas, response codes, response
+headers and response schemas. Examples are treated as documentation and do not
+participate in the executable-contract comparison.
+
 Spring Boot Server 
 
 

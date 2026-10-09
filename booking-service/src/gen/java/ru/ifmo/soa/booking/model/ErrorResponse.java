@@ -14,7 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description="Информация об ошибке выполнения запроса")
 @jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaResteasyServerCodegen", date = "2026-09-29T15:09:58.593749+03:00[Europe/Moscow]")
 public class ErrorResponse   {
-  private String timestamp = null;  private Integer status = null;  private String error = null;  private String message = null;  private String path = null;  private List<ErrorResponseViolations> violations = new ArrayList<ErrorResponseViolations>();
+  private String timestamp = null;  private Integer status = null;  private String error = null;  private String message = null;  private String path = null;  private List<ErrorResponseViolations> violations = null;
 
 
 
@@ -80,7 +80,6 @@ public class ErrorResponse   {
 
   @Schema(description = "Список нарушений схемы с именами полей. Для ошибок разбора может указываться весь параметр ticket.")
   @JsonProperty("violations")
-  @NotNull
   public List<ErrorResponseViolations> getViolations() {
     return violations;
   }
