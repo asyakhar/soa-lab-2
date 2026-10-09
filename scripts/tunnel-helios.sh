@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "Клиент будет доступен по адресу https://localhost:5080"
+HELIOS_USER="${HELIOS_USER:-${1:-s408303}}"
+HELIOS_HOST="${HELIOS_HOST:-helios.cs.ifmo.ru}"
+HELIOS_KEY="${HELIOS_KEY:-$HOME/.ssh/id_ed25519_helios}"
+
+echo "Открываю SSH-туннель к фронту на Helios..."
+echo "После подключения откройте https://localhost:5080 в браузере."
+echo "Терминал должен оставаться открытым; для остановки нажмите Ctrl+C."
+echo "Подключение: $HELIOS_USER@$HELIOS_HOST"
 exec ssh -N \
+    -o ExitOnForwardFailure=yes \
+    -o ServerAliveInterval=30 \
+    -o ServerAliveCountMax=3 \
+    -i "$HELIOS_KEY" \
     -p 2222 \
     -L 5080:127.0.0.1:18230 \
-    s409792@helios.cs.ifmo.ru
+    "$HELIOS_USER@$HELIOS_HOST"

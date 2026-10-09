@@ -23,3 +23,20 @@
 
 Для других адресов сервисов можно задать `TICKET_SERVICE_URL`,
 `BOOKING_SERVICE_URL` и `CLIENT_PORT`.
+
+Для запуска клиента по HTTPS задайте одновременно `CLIENT_CERT_FILE` и
+`CLIENT_KEY_FILE` — пути к PEM-сертификату и его закрытому ключу. Имена
+`CLIENT_TLS_CERT` и `CLIENT_TLS_KEY` также поддерживаются для совместимости.
+
+На Helios `start-helios.sh` сначала ищет пользовательские файлы
+`client/tls/frontend.crt` и `client/tls/frontend.key`. Если их нет, скрипт
+`setup-client-tls.sh` автоматически создаёт самоподписанную пару в
+`wildfly/tls/client-cert.pem` и `wildfly/tls/client-key.pem`.
+
+SSH-туннель по умолчанию подключается под пользователем `s408303`. Другой
+аккаунт можно передать аргументом или переменной окружения, например:
+
+```bash
+./scripts/tunnel-helios.sh s409792
+HELIOS_USER=s409792 ./scripts/tunnel-helios.sh
+```

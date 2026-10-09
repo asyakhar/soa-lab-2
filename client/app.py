@@ -18,8 +18,8 @@ BOOKING_SERVICE_URL = os.getenv(
     "https://localhost:8643/booking",
 ).rstrip("/")
 
-CLIENT_CERT_FILE = os.getenv("CLIENT_CERT_FILE")
-CLIENT_KEY_FILE = os.getenv("CLIENT_KEY_FILE")
+CLIENT_CERT_FILE = os.getenv("CLIENT_CERT_FILE") or os.getenv("CLIENT_TLS_CERT")
+CLIENT_KEY_FILE = os.getenv("CLIENT_KEY_FILE") or os.getenv("CLIENT_TLS_KEY")
 
 HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 session = requests.Session()
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     port = int(os.getenv("CLIENT_PORT", "5000"))
     if bool(CLIENT_CERT_FILE) != bool(CLIENT_KEY_FILE):
         raise RuntimeError(
-            "CLIENT_CERT_FILE и CLIENT_KEY_FILE должны быть заданы вместе."
+            "TLS certificate and key must be set together"
         )
     ssl_context = (
         (CLIENT_CERT_FILE, CLIENT_KEY_FILE)

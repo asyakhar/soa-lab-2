@@ -6,14 +6,68 @@ LAB2_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 WILDFLY_HOME="$LAB2_DIR/wildfly/wildfly-ee-10-41.0.1.Final"
 SERVERS_DIR="$LAB2_DIR/wildfly/servers"
 TLS_DIR="$LAB2_DIR/wildfly/tls"
+CLIENT_DIR="$LAB2_DIR/client"
+CUSTOM_CLIENT_CERT="$CLIENT_DIR/tls/frontend.crt"
+CUSTOM_CLIENT_KEY="$CLIENT_DIR/tls/frontend.key"
+GENERATED_CLIENT_CERT="$TLS_DIR/client-cert.pem"
+GENERATED_CLIENT_KEY="$TLS_DIR/client-key.pem"
+CLIENT_CERT_FILE=""
+CLIENT_KEY_FILE=""
 TICKET_OFFSET=9587
 BOOKING_OFFSET=9687
 TICKET_PORT=18030
 BOOKING_PORT=18130
 CLIENT_PORT=18230
 
-COMMON_JAVA_OPTS="-Xms32m -Xss256k -XX:ActiveProcessorCount=2 -XX:+UseSerialGC --add-opens=java.base/java.util=ALL-UNNAMED"
+COMMON_JAVA_OPTS="-Xms32m -Xss256k -XX:ActiveProcessorCount=1 -XX:+UseSerialGC -Dorg.jboss.weld.bootstrap.concurrentDeployment=false --add-opens=java.base/java.util=ALL-UNNAMED"
 export JAVA_OPTS="$COMMON_JAVA_OPTS -Xmx160m -XX:MaxMetaspaceSize=144m"
+
+port_is_busy() {
+    local port="$1"
+    (echo >/dev/tcp/127.0.0.1/"$port") >/dev/null 2>&1
+}
+
+check_ports() {
+    local busy=()
+    local port
+
+    for port in 19577 19677 "$TICKET_PORT" "$BOOKING_PORT" "$CLIENT_PORT"; do
+        if port_is_busy "$port"; then
+            busy+=("$port")
+        fi
+    done
+
+    if ((${#busy[@]} > 0)); then
+        echo "Нельзя запустить сервисы: порты уже заняты: ${busy[*]}" >&2
+        echo "Вероятно, экземпляр WildFly уже запущен." >&2
+        echo "Выполните ./scripts/stop-helios.sh, затем повторите запуск." >&2
+        exit 1
+    fi
+}
+
+prepare_client_certificate() {
+    if [[ -e "$CUSTOM_CLIENT_CERT" || -e "$CUSTOM_CLIENT_KEY" ]]; then
+        if [[ ! -r "$CUSTOM_CLIENT_CERT" || ! -r "$CUSTOM_CLIENT_KEY" ]]; then
+            echo "Пользовательский TLS-сертификат и ключ должны существовать вместе:" >&2
+            echo "  $CUSTOM_CLIENT_CERT" >&2
+            echo "  $CUSTOM_CLIENT_KEY" >&2
+            exit 1
+        fi
+        CLIENT_CERT_FILE="$CUSTOM_CLIENT_CERT"
+        CLIENT_KEY_FILE="$CUSTOM_CLIENT_KEY"
+        echo "Используется пользовательский HTTPS-сертификат клиента."
+        return
+    fi
+
+    bash "$SCRIPT_DIR/setup-client-tls.sh"
+    CLIENT_CERT_FILE="$GENERATED_CLIENT_CERT"
+    CLIENT_KEY_FILE="$GENERATED_CLIENT_KEY"
+
+    if [[ ! -r "$CLIENT_CERT_FILE" || ! -r "$CLIENT_KEY_FILE" ]]; then
+        echo "Не удалось подготовить HTTPS-сертификат клиента." >&2
+        exit 1
+    fi
+}
 
 wait_for_server() {
     local name="$1"
@@ -42,6 +96,28 @@ wait_for_server() {
     exit 1
 }
 
+wait_for_client() {
+    local pid="$1"
+
+    for _ in {1..30}; do
+        if curl -ksS --fail --max-time 2 \
+            "https://127.0.0.1:$CLIENT_PORT/" >/dev/null 2>&1; then
+            echo "HTTPS-клиент запущен (PID $pid)."
+            return
+        fi
+        if ! kill -0 "$pid" 2>/dev/null; then
+            echo "HTTPS-клиент завершился с ошибкой." >&2
+            tail -60 "$CLIENT_DIR/client.log" >&2
+            exit 1
+        fi
+        sleep 1
+    done
+
+    echo "HTTPS-клиент не успел запуститься." >&2
+    tail -60 "$CLIENT_DIR/client.log" >&2
+    exit 1
+}
+
 start_wildfly() {
     local name="$1"
     local base="$2"
@@ -61,6 +137,9 @@ start_wildfly() {
     echo "$pid" >"$base/server.pid"
     wait_for_server "$name" "$base" "$pid"
 }
+
+prepare_client_certificate
+check_ports
 
 start_wildfly "Ticket WildFly" "$SERVERS_DIR/ticket" "$TICKET_OFFSET" \
     -Djboss.tx.node.id=ticket
@@ -84,22 +163,22 @@ start_wildfly "Booking WildFly" "$SERVERS_DIR/booking" "$BOOKING_OFFSET" \
     -Djavax.net.ssl.trustStore="$TLS_DIR/booking-truststore.p12" \
     -Djavax.net.ssl.trustStorePassword=changeit
 
-CLIENT_DIR="$LAB2_DIR/client"
 if [[ ! -x "$CLIENT_DIR/.venv/bin/python" ]]; then
     python3.11 -m venv "$CLIENT_DIR/.venv"
 fi
 "$CLIENT_DIR/.venv/bin/pip" install --quiet -r "$CLIENT_DIR/requirements.txt"
-bash "$SCRIPT_DIR/setup-client-tls.sh"
 
 nohup env \
     TICKET_SERVICE_URL="https://127.0.0.1:$TICKET_PORT/api/v1" \
     BOOKING_SERVICE_URL="https://127.0.0.1:$BOOKING_PORT/booking" \
     CLIENT_PORT="$CLIENT_PORT" \
-    CLIENT_CERT_FILE="$TLS_DIR/client-cert.pem" \
-    CLIENT_KEY_FILE="$TLS_DIR/client-key.pem" \
+    CLIENT_CERT_FILE="$CLIENT_CERT_FILE" \
+    CLIENT_KEY_FILE="$CLIENT_KEY_FILE" \
     "$CLIENT_DIR/.venv/bin/python" "$CLIENT_DIR/app.py" \
     >"$CLIENT_DIR/client.log" 2>&1 &
-echo $! >"$CLIENT_DIR/client.pid"
+CLIENT_PID=$!
+echo "$CLIENT_PID" >"$CLIENT_DIR/client.pid"
+wait_for_client "$CLIENT_PID"
 
 echo "Ticket Service:  https://127.0.0.1:$TICKET_PORT/api/v1"
 echo "Booking Service: https://127.0.0.1:$BOOKING_PORT/booking"
