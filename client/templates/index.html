@@ -4,194 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ЦИРКуль — билетная касса</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=bunny-4">
-    <link rel="stylesheet" href="{{ url_for('static', filename='modern.css') }}?v=bunny-4">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=mfe-1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='modern.css') }}?v=mfe-1">
 </head>
 <body>
 <header class="site-header">
     <div class="marquee-lights" aria-hidden="true"></div>
-    <div class="tent-wheel" aria-hidden="true">
-        <div class="tent-wheel-center"></div>
-    </div>
+    <div class="tent-wheel" aria-hidden="true"><div class="tent-wheel-center"></div></div>
     <div class="hero-copy">
         <p class="eyebrow">Билетная касса • представление начинается</p>
         <h1>ЦИРКуль</h1>
         <p class="hero-slogan">Очерти круг своих проблем и бронируй тут билет!</p>
         <div class="mascot-stage" aria-label="Круглик, зайчик-билетёр">
-            <img class="mascot-portrait" src="{{ url_for('static', filename='assets/kruglik-bunny.png') }}" alt="Зайчик в шляпе фокусника" width="160" height="160">
-            <div id="message" class="message mascot-speech" role="status" aria-live="polite">Привет! Помогу найти представление и оформить билет.</div>
+            <img class="mascot-portrait" src="{{ url_for('static', filename='assets/kruglik-bunny.png') }}"
+                 alt="Зайчик в шляпе фокусника" width="160" height="160">
+            <div id="message" class="message mascot-speech" role="status" aria-live="polite">
+                Привет! Помогу найти представление и оформить билет.
+            </div>
         </div>
     </div>
-    <button id="reloadButton" class="primary hero-refresh">Обновить афишу <span aria-hidden="true">↻</span></button>
+    <button id="reloadButton" class="primary hero-refresh" type="button">
+        Обновить афишу <span aria-hidden="true">↻</span>
+    </button>
 </header>
 
-<button class="balloon-trigger balloon-trigger-left" type="button"
-        aria-label="Нажать на воздушные шары слева">
-    <img src="{{ url_for('static', filename='assets/circus-balloons.png') }}"
-         alt="Цирковые воздушные шары" draggable="false">
+<button class="balloon-trigger balloon-trigger-left" type="button" aria-label="Нажать на воздушные шары слева">
+    <img src="{{ url_for('static', filename='assets/circus-balloons.png') }}" alt="Цирковые воздушные шары" draggable="false">
 </button>
-
-<button class="balloon-trigger balloon-trigger-right" type="button"
-        aria-label="Нажать на воздушные шары справа">
-    <img src="{{ url_for('static', filename='assets/circus-balloons.png') }}"
-         alt="Цирковые воздушные шары" draggable="false">
+<button class="balloon-trigger balloon-trigger-right" type="button" aria-label="Нажать на воздушные шары справа">
+    <img src="{{ url_for('static', filename='assets/circus-balloons.png') }}" alt="Цирковые воздушные шары" draggable="false">
 </button>
-
-<button class="balloon-trigger balloon-trigger-top-right" type="button"
-        aria-label="Нажать на воздушные шары справа вверху">
-    <img src="{{ url_for('static', filename='assets/circus-balloons.png') }}"
-         alt="Цирковые воздушные шары" draggable="false">
+<button class="balloon-trigger balloon-trigger-top-right" type="button" aria-label="Нажать на воздушные шары справа вверху">
+    <img src="{{ url_for('static', filename='assets/circus-balloons.png') }}" alt="Цирковые воздушные шары" draggable="false">
 </button>
 
 <main>
-    <section class="panel">
-        <h2><span class="section-star">✦</span> Афиша представлений</h2>
-        <div class="filters">
-            <label>Страница
-                <input id="page" type="number" min="0" value="0">
-            </label>
-            <label>Размер
-                <input id="size" type="number" min="1" max="100" value="10">
-            </label>
-            <label class="wide">Сортировка
-                <input id="sort" placeholder="price,desc (каждое условие с новой строки)">
-            </label>
-            <label class="wide">Фильтры
-                <textarea id="filter" rows="2" placeholder="price:gte:100&#10;type:eq:VIP"></textarea>
-            </label>
-            <button id="applyFiltersButton" class="primary">Найти билеты</button>
-        </div>
-
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Название</th>
-                    <th>Координаты</th>
-                    <th>Дата создания</th>
-                    <th>Цена</th>
-                    <th>Комментарий</th>
-                    <th>Тип</th>
-                    <th>Мероприятие</th>
-                </tr>
-                </thead>
-                <tbody id="ticketTableBody"></tbody>
-            </table>
-        </div>
-
-        <div class="pagination">
-            <button id="previousPageButton">Назад</button>
-            <span id="pageLabel">Страница 0</span>
-            <button id="nextPageButton">Вперёд</button>
-        </div>
-    </section>
-
-    <div class="grid">
-        <section class="panel">
-            <h2><span class="section-star">✦</span> Выпустить билет</h2>
-            <form id="createForm">
-                <label>JSON билета
-                    <textarea id="createTicket" rows="11">{
-  "name": "Билет в партер",
-  "coordinates": {"x": 10.5, "y": 20},
-  "price": 2500.5,
-  "comment": "Место рядом со сценой",
-  "type": "VIP",
-  "event": null
-}</textarea>
-                </label>
-                <button class="primary">Выпустить билет</button>
-            </form>
-        </section>
-
-        <section class="panel">
-            <h2><span class="section-star">✦</span> Найти билет</h2>
-            <form id="getForm" class="compact-form">
-                <label>ID билета <input id="getId" type="number" min="1" required></label>
-                <label>ETag (необязательно) <input id="getEtag" placeholder='"ticket-1-v1"'></label>
-                <button>Получить</button>
-            </form>
-            <form id="deleteForm" class="compact-form danger-zone">
-                <label>ID билета <input id="deleteId" type="number" min="1" required></label>
-                <div class="clown-hand-delete">
-                    <button class="danger">Удалить</button>
-                    <img class="clown-grab-hand"
-                         src="{{ url_for('static', filename='assets/clown-grab-hand.png') }}"
-                         alt="" aria-hidden="true" draggable="false">
-                </div>
-            </form>
-            <button id="optionsButton">Показать разрешённые методы</button>
-        </section>
-
-        <section class="panel">
-            <h2><span class="section-star">✦</span> Полное обновление · PUT</h2>
-            <form id="putForm">
-                <label>ID билета <input id="putId" type="number" min="1" required></label>
-                <label>JSON билета
-                    <textarea id="putTicket" rows="9">{
-  "name": "Обновлённый билет",
-  "coordinates": {"x": 15, "y": 25},
-  "price": 3000,
-  "comment": "Обновлено",
-  "type": "USUAL",
-  "event": null
-}</textarea>
-                </label>
-                <button class="primary">Обновить</button>
-            </form>
-        </section>
-
-        <section class="panel">
-            <h2><span class="section-star">✦</span> Частичное обновление · PATCH</h2>
-            <form id="patchForm">
-                <label>ID билета <input id="patchId" type="number" min="1" required></label>
-                <label>JSON изменяемых полей
-                    <textarea id="patchTicket" rows="9">{
-  "price": 2800,
-  "comment": "Новый комментарий"
-}</textarea>
-                </label>
-                <button class="primary">Изменить</button>
-            </form>
-        </section>
-
-        <section class="panel">
-            <h2><span class="section-star">✦</span> Особые номера</h2>
-            <button id="maxTypeButton">Билет с максимальным типом</button>
-            <form id="commentForm" class="compact-form">
-                <label>Подстрока комментария
-                    <input id="commentSubstring" required>
-                </label>
-                <button>Найти</button>
-            </form>
-            <form id="typeForm" class="compact-form">
-                <label>Тип
-                    <select id="greaterType">
-                        <option>VIP</option>
-                        <option>USUAL</option>
-                        <option>BUDGETARY</option>
-                        <option>CHEAP</option>
-                    </select>
-                </label>
-                <button>Найти типы больше</button>
-            </form>
-        </section>
-
-        <section class="panel booking-panel">
-            <h2><span class="section-star">✦</span> Цирковая касса</h2>
-            <form id="sellForm" class="compact-form">
-                <label>ID билета <input id="sellTicketId" type="number" min="1" required></label>
-                <label>ID человека <input id="sellPersonId" type="number" min="1" required></label>
-                <label>Цена продажи <input id="sellPrice" type="number" min="0" step="any" required></label>
-                <button class="primary">Продать</button>
-            </form>
-            <form id="cancelForm" class="compact-form danger-zone">
-                <label>ID человека <input id="cancelPersonId" type="number" min="1" required></label>
-                <button class="danger">Отменить все бронирования</button>
-            </form>
-        </section>
-    </div>
+    <ticket-mfe api-base="/api/ticket"></ticket-mfe>
+    <booking-mfe api-base="/api/booking" ticket-api-base="/api/ticket"></booking-mfe>
 </main>
 
 <footer class="circus-contacts">
@@ -199,66 +48,17 @@
         <p class="contacts-kicker"><span class="contacts-brand">ЦИРКуль</span> ждёт гостей</p>
         <h2>До встречи под куполом</h2>
     </div>
-    <address class="contact-item">
-        <span class="contact-label">Адрес</span>
-        <strong>Кронверкский проспект, 49</strong>
-    </address>
-    <div class="contact-item">
-        <span class="contact-label">Хозяйки цирка</span>
-        <strong>Даша и Настя</strong>
-    </div>
+    <address class="contact-item"><span class="contact-label">Адрес</span><strong>Кронверкский проспект, 49</strong></address>
+    <div class="contact-item"><span class="contact-label">Хозяйки цирка</span><strong>Даша и Настя</strong></div>
 </footer>
 
-<div id="ticketModal" class="ticket-modal" aria-hidden="true">
-    <div class="ticket-modal-backdrop" data-ticket-close></div>
-    <section class="printed-ticket" role="dialog" aria-modal="true" aria-labelledby="ticketHeading">
-        <button class="ticket-close" type="button" aria-label="Закрыть билет" data-ticket-close>×</button>
-        <div class="ticket-topline"><span>ЦИРКуль</span><span>ВХОДНОЙ БИЛЕТ</span></div>
-        <div class="ticket-roof" aria-hidden="true"><span>✦</span></div>
-        <p class="ticket-kicker">Сегодня вы — часть представления</p>
-        <h2 id="ticketHeading" class="ticket-event-name">Билет оформлен!</h2>
-        <div class="ticket-number">№ <span id="receiptTicketId">—</span></div>
-        <div class="ticket-perforation"><span></span><span></span></div>
-        <div class="ticket-details">
-            <div><small>ГОСТЬ</small><strong id="receiptPerson">—</strong></div>
-            <div><small>ТИП БИЛЕТА</small><strong id="receiptType">—</strong></div>
-            <div><small>МЕРОПРИЯТИЕ</small><strong id="receiptEvent">—</strong></div>
-            <div><small>ЦЕНА</small><strong id="receiptPrice">—</strong></div>
-            <div><small>МЕСТО · КООРДИНАТЫ</small><strong id="receiptCoordinates">—</strong></div>
-            <div><small>ВЫПИСАН</small><strong id="receiptDate">—</strong></div>
-        </div>
-        <div class="ticket-barcode" aria-hidden="true"></div>
-        <p class="ticket-footer">Очерти круг своих проблем — и до встречи под куполом!</p>
-        <div class="ticket-actions">
-            <button id="printTicketButton" class="primary" type="button">Распечатать билет</button>
-            <button id="replayTigerButton" class="ticket-dismiss" type="button">Ещё раз позвать тигра</button>
-            <button class="ticket-dismiss" type="button" data-ticket-close>Готово</button>
-        </div>
-    </section>
-</div>
-
 <div id="clownScare" class="clown-scare" role="presentation" aria-hidden="true">
-    <img class="scare-clown scare-clown-left"
-         src="{{ url_for('static', filename='assets/scary-clown.png') }}"
-         alt="Страшный цирковой клоун">
-    <img class="scare-clown scare-clown-right"
-         src="{{ url_for('static', filename='assets/scary-clown.png') }}"
-         alt="Страшный цирковой клоун">
+    <img class="scare-clown scare-clown-left" src="{{ url_for('static', filename='assets/scary-clown.png') }}" alt="Страшный цирковой клоун">
+    <img class="scare-clown scare-clown-right" src="{{ url_for('static', filename='assets/scary-clown.png') }}" alt="Страшный цирковой клоун">
 </div>
 
-<div id="tigerShow" class="tiger-show" aria-hidden="true">
-    <img src="{{ url_for('static', filename='assets/tiger-fire-ring.png') }}"
-         alt="Тигр прыгает через огненное кольцо">
-</div>
-
-<div id="saleConfetti" class="confetti-layer" aria-hidden="true"></div>
-
-<div id="bookingCurtain" class="booking-curtain" aria-hidden="true">
-    <div class="curtain-panel curtain-panel-left"></div>
-    <div class="curtain-panel curtain-panel-right"></div>
-    <div class="curtain-message">Цирка не будет</div>
-</div>
-
-<script src="{{ url_for('static', filename='app.js') }}?v=bunny-4"></script>
+<script type="module" src="{{ url_for('static', filename='mfe/shell/shell.js') }}?v=mfe-1"></script>
+<script type="module" src="{{ url_for('static', filename='mfe/ticket/ticket-mfe.js') }}?v=mfe-1"></script>
+<script type="module" src="{{ url_for('static', filename='mfe/booking/booking-mfe.js') }}?v=mfe-1"></script>
 </body>
 </html>

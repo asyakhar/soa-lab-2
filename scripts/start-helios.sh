@@ -89,15 +89,18 @@ if [[ ! -x "$CLIENT_DIR/.venv/bin/python" ]]; then
     python3.11 -m venv "$CLIENT_DIR/.venv"
 fi
 "$CLIENT_DIR/.venv/bin/pip" install --quiet -r "$CLIENT_DIR/requirements.txt"
+bash "$SCRIPT_DIR/setup-client-tls.sh"
 
 nohup env \
     TICKET_SERVICE_URL="https://127.0.0.1:$TICKET_PORT/api/v1" \
     BOOKING_SERVICE_URL="https://127.0.0.1:$BOOKING_PORT/booking" \
     CLIENT_PORT="$CLIENT_PORT" \
+    CLIENT_CERT_FILE="$TLS_DIR/client-cert.pem" \
+    CLIENT_KEY_FILE="$TLS_DIR/client-key.pem" \
     "$CLIENT_DIR/.venv/bin/python" "$CLIENT_DIR/app.py" \
     >"$CLIENT_DIR/client.log" 2>&1 &
 echo $! >"$CLIENT_DIR/client.pid"
 
 echo "Ticket Service:  https://127.0.0.1:$TICKET_PORT/api/v1"
 echo "Booking Service: https://127.0.0.1:$BOOKING_PORT/booking"
-echo "Client:          http://127.0.0.1:$CLIENT_PORT"
+echo "Client:          https://127.0.0.1:$CLIENT_PORT"

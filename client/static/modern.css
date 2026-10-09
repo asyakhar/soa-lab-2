@@ -15,6 +15,11 @@ body {
         #f4ead6;
 }
 
+ticket-mfe,
+booking-mfe {
+    display: contents;
+}
+
 .site-header {
     min-height: 360px;
     justify-content: center;
@@ -529,9 +534,13 @@ tbody tr:hover { background: #f8e5bd; }
 @media print {
     @page { margin: 12mm; size: auto; }
     body { min-width: 0; background: #fff; }
-    body > *:not(#ticketModal) { display: none !important; }
-    #ticketModal:not(.active) { display: none !important; }
-    #ticketModal, #ticketModal.active { position: static; display: block !important; overflow: visible; padding: 0; }
+    body > * { display: none !important; }
+    body > main { display: block !important; padding: 0; }
+    ticket-mfe { display: none !important; }
+    booking-mfe { display: contents !important; }
+    booking-mfe > *:not(.ticket-modal) { display: none !important; }
+    .ticket-modal:not(.active) { display: none !important; }
+    .ticket-modal, .ticket-modal.active { position: static; display: block !important; overflow: visible; padding: 0; }
     .ticket-modal-backdrop, .ticket-close, .ticket-actions { display: none !important; }
     .printed-ticket { width: 100%; max-width: 150mm; margin: 0 auto; border: 2px solid #8a2540; box-shadow: none; animation: none; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
     .printed-ticket::before, .printed-ticket::after, .ticket-roof { animation: none; }

@@ -18,6 +18,9 @@ BOOKING_SERVICE_URL = os.getenv(
     "https://localhost:8643/booking",
 ).rstrip("/")
 
+CLIENT_CERT_FILE = os.getenv("CLIENT_CERT_FILE")
+CLIENT_KEY_FILE = os.getenv("CLIENT_KEY_FILE")
+
 HTTP_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 session = requests.Session()
 
@@ -81,4 +84,18 @@ def booking_proxy(resource):
 
 if __name__ == "__main__":
     port = int(os.getenv("CLIENT_PORT", "5000"))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    if bool(CLIENT_CERT_FILE) != bool(CLIENT_KEY_FILE):
+        raise RuntimeError(
+            "CLIENT_CERT_FILE и CLIENT_KEY_FILE должны быть заданы вместе."
+        )
+    ssl_context = (
+        (CLIENT_CERT_FILE, CLIENT_KEY_FILE)
+        if CLIENT_CERT_FILE and CLIENT_KEY_FILE
+        else None
+    )
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=False,
+        ssl_context=ssl_context,
+    )
